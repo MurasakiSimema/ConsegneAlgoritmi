@@ -1,14 +1,12 @@
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <string>
-
 
 int read_count = 0;
 
 bool isOrdered(int* A, int n) {
-  for (int i = 0; i < n - 1;++i) {
-    if (A[i] > A[i + 1])
-      return false;
+  for (int i = 0; i < n - 1; ++i) {
+    if (A[i] > A[i + 1]) return false;
   }
 
   return true;
@@ -33,7 +31,6 @@ void insertionSort(int* A, int n) {
 }
 
 void reverseInsertionSort(int* A, int n) {
-  //insertion sort but with reversed loop
   int i, j, key;
   for (i = n - 2; i >= 0; i--) {
     key = A[i];
@@ -50,7 +47,7 @@ void reverseInsertionSort(int* A, int n) {
     ++read_count;
   }
 
-  for (int i = 0; i < n / 2;++i) {
+  for (int i = 0; i < n / 2; ++i) {
     int tmp = A[i];
     ++read_count;
     A[i] = A[n - i - 1];
@@ -71,15 +68,12 @@ void merge(int* A, int p, int q, int r) {
     L[i] = A[p + i];
     ++read_count;
   }
-  L[i] = INT_MAX; /// max int
   int maxI = i;
-
 
   for (i = 0; i < r - q; ++i) {
     R[i] = A[q + 1 + i];
     ++read_count;
   }
-  R[i] = INT_MAX; /// max int
   int maxJ = i;
 
   i = 0;
@@ -93,8 +87,7 @@ void merge(int* A, int p, int q, int r) {
     if (li <= rj) {
       A[k] = li;
       ++i;
-    }
-    else {
+    } else {
       A[k] = rj;
       ++j;
     }
@@ -115,67 +108,51 @@ void merge(int* A, int p, int q, int r) {
   }
 }
 
-int shellSort(int A[], int n)
-{
-  // Start with a big gap, then reduce the gap
+int shellSort(int A[], int n) {
   for (int gap = n / 2; gap > 0; gap /= 2) {
-    // Do a gapped insertion sort for this gap size.
-    // The first gap elements a[0..gap-1] are already in gapped order
-    // keep adding one more element until the entire array is
-    // gap sorted 
     for (int i = gap; i < n; i += 1) {
-      // add a[i] to the elements that have been gap sorted
-      // save a[i] in temp and make a hole at position i
       int temp = A[i];
       ++read_count;
 
-      // shift earlier gap-sorted elements up until the correct 
-      // location for a[i] is found
       int j;
-      for (j = i; j >= gap && A[j - gap] > temp; j -= gap) {
-        ++read_count;
-        A[j] = A[j - gap];
-        ++read_count;
-      }
+      int tempWithGap = A[i - gap];  //?2
       ++read_count;
+      for (j = i; j >= gap && tempWithGap > temp; j -= gap) {  //?2
+        A[j] = tempWithGap;                                    //?2
+        if (j >= gap + gap) {                                  //?2
+          tempWithGap = A[j - gap - gap];                      //?2
+          ++read_count;
+        }
+      }
 
-      //  put temp (the original a[i]) in its correct location
       A[j] = temp;
     }
   }
   return 0;
 }
 
-int reverseShellSort(int arr[], int n)
-{
-  // Start with a big gap, then reduce the gap
+int reverseShellSort(int arr[], int n) {
   for (int gap = n / 2; gap > 0; gap /= 2) {
-    // Do a gapped insertion sort for this gap size.
-    // The first gap elements a[0..gap-1] are already in gapped order
-    // keep adding one more element until the entire array is
-    // gap sorted 
     for (int i = gap; i < n; i += 1) {
-      // add a[i] to the elements that have been gap sorted
-      // save a[i] in temp and make a hole at position i
       int temp = arr[i];
       read_count++;
 
-      // shift earlier gap-sorted elements up until the correct 
-      // location for a[i] is found
       int j;
-      for (j = i; j >= gap && arr[j - gap] < temp; j -= gap) {
-        read_count++;
-        arr[j] = arr[j - gap];
-        read_count++;
+      int tempWithGap = arr[i - gap];  //?3
+      ++read_count;
+      for (j = i; j >= gap && tempWithGap < temp; j -= gap) {  //?3
+        arr[j] = tempWithGap;                                  //?3
+        if (j >= gap + gap) {
+          tempWithGap = arr[j - gap - gap];  //?3
+          ++read_count;
+        }
       }
-      read_count++;
 
-      //  put temp (the original a[i]) in its correct location
       arr[j] = temp;
     }
   }
 
-  for(int i = 0; i < n / 2; ++i) {
+  for (int i = 0; i < n / 2; ++i) {
     int tmp = arr[i];
     read_count++;
     arr[i] = arr[n - i - 1];
@@ -185,7 +162,6 @@ int reverseShellSort(int arr[], int n)
 
   return 0;
 }
-
 
 int main() {
   int i, test;
@@ -207,7 +183,6 @@ int main() {
   bool areOrdered[100];
 
   for (test = 0; test < 100; test++) {
-
     /// inizializzazione array: numeri random con range dimensione array
     for (i = 0; i < n; i++) {
       char comma;
@@ -217,23 +192,23 @@ int main() {
     }
 
     read_count = 0;
-    //!insertionSort(A, 250);
-    //!std::cout << "Insertion sort: " << read_count << std::endl;
+    //! insertionSort(A, 250);
+    //! std::cout << "Insertion sort: " << read_count << std::endl;
 
     shellSort(A, 250);
     std::cout << "Shell sort -1: " << read_count << std::endl;
 
-    //reverseInsertionSort(A + 250, 250);
-    //std::cout << "Reverse insertion sort: " << read_count << std::endl;
+    // reverseInsertionSort(A + 250, 250);
+    // std::cout << "Reverse insertion sort: " << read_count << std::endl;
 
-    //merge(A, 0, 249, 499);
-    //std::cout << "Merge 1: " << read_count << std::endl;
+    // merge(A, 0, 249, 499);
+    // std::cout << "Merge 1: " << read_count << std::endl;
 
-    //reverseInsertionSort(A + 500, 250);
-    //std::cout << "Reverse insertion sort 2: " << read_count << std::endl;
+    // reverseInsertionSort(A + 500, 250);
+    // std::cout << "Reverse insertion sort 2: " << read_count << std::endl;
 
-    //!reverseInsertionSort(A + 250, 500);
-    //!std::cout << "Reverse insertion sort: " << read_count << std::endl;
+    //! reverseInsertionSort(A + 250, 500);
+    //! std::cout << "Reverse insertion sort: " << read_count << std::endl;
 
     reverseShellSort(A + 250, 500);
     std::cout << "Shell sort -2: " << read_count << std::endl;
@@ -241,37 +216,34 @@ int main() {
     merge(A, 0, 249, 749);
     std::cout << "Merge 1: " << read_count << std::endl;
 
-    //merge(A, 0, 499, 749);
-    //std::cout << "Merge -2: " << read_count << std::endl;
+    // merge(A, 0, 499, 749);
+    // std::cout << "Merge -2: " << read_count << std::endl;
 
-    //!insertionSort(A + 750, 250);
-    //!std::cout << "Insertion sort 2: " << read_count << std::endl;
+    //! insertionSort(A + 750, 250);
+    //! std::cout << "Insertion sort 2: " << read_count << std::endl;
 
     shellSort(A + 750, 250);
     std::cout << "Shell sort 1: " << read_count << std::endl;
 
-    //!merge(A, 500, 749, 999);
-    //!std::cout << "Merge 2: " << read_count << std::endl;
+    //! merge(A, 500, 749, 999);
+    //! std::cout << "Merge 2: " << read_count << std::endl;
 
-    //!merge(A, 0, 499, 999);
-    //!std::cout << "Merge 3: " << read_count << std::endl;
+    //! merge(A, 0, 499, 999);
+    //! std::cout << "Merge 3: " << read_count << std::endl;
 
     merge(A, 0, 749, 999);
     std::cout << "Merge 2: " << read_count << std::endl;
 
-
     read_avg += read_count;
-    if (read_min < 0 || read_min > read_count)
-      read_min = read_count;
-    if (read_max < 0 || read_max < read_count)
-      read_max = read_count;
+    if (read_min < 0 || read_min > read_count) read_min = read_count;
+    if (read_max < 0 || read_max < read_count) read_max = read_count;
 
     areOrdered[test] = isOrdered(A, 1000);
   }
   read_avg /= 100;
 
   std::cout << std::endl;
-  for (int i = 0; i < 100;++i)
+  for (int i = 0; i < 100; ++i)
     if (areOrdered[i] != true)
       std::cout << "Test n" << i << " is not ordered" << std::endl;
 
@@ -279,3 +251,9 @@ int main() {
   std::cout << "First 1000 element" << std::endl;
   std::cout << "Min: " << read_min << ", Med: " << read_avg << ", Max: " << read_max << std::endl;
 }
+
+//? Min: 20740, Med: 20917, Max: 21116
+
+//?2 Min: 20116, Med: 20263, Max: 20438
+
+//?3 Min: 19507, Med: 19595, Max: 19697

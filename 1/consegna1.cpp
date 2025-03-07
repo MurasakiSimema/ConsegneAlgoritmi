@@ -61,7 +61,6 @@ void merge(int* A, int p, int q, int r) {
     L[i] = A[p + i];
     ++read_count;
   }
-  L[i] = INT_MAX; /// max int
   int maxI = i;
 
 
@@ -69,7 +68,6 @@ void merge(int* A, int p, int q, int r) {
     R[i] = A[q + 1 + i];
     ++read_count;
   }
-  R[i] = INT_MAX; /// max int
   int maxJ = i;
 
   i = 0;
@@ -121,12 +119,15 @@ int shellSort(int A[], int n) {
       // shift earlier gap-sorted elements up until the correct 
       // location for a[i] is found
       int j;
-      for (j = i; j >= gap && A[j - gap] > temp; j -= gap) {
-        ++read_count;
-        A[j] = A[j - gap];
-        ++read_count;
-      }
+      int tempWithGap = A[i - gap]; //?2
       ++read_count;
+      for (j = i; j >= gap && tempWithGap > temp; j -= gap) { //?2
+        A[j] = tempWithGap; //?2
+        if(j >= gap + gap) { //?2
+          tempWithGap = A[j - gap - gap]; //?2
+          ++read_count;
+        }
+      }
 
       //  put temp (the original a[i]) in its correct location
       A[j] = temp;
