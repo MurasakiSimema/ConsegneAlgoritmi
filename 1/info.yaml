@@ -1,0 +1,13 @@
+Prima consegna:
+  - deve andare meglio del quicksort
+  - se lo fai entro fine mese (entro 31 marzo) partecipi alla gara
+  - deve andare bene solo sui dataset richiesti
+  - no algoritmi visti a lezione (ma si può usare la funzione merge di merge sort)
+  - https://en.wikipedia.org/wiki/Sorting_algorithm
+  - minimizzare letture in RAM durante l'ordinamento delle serie di dati (metti te il counter), accesso in registro/variabile gratis, lettura array o riferimento costa 1
+    - magari salva la cella in una variabile
+  - file consegna1.cpp con il codice e file consegna1.txt con l'output del programma
+  - scrivere nel sorgente l'eventuale gruppo
+  - usare strutture dati che vuoi, ma no librerie
+    - heap e heapsort
+  
