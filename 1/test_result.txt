@@ -1,6 +1,6 @@
 Quicksort
 
-Med: 93011
+Min: 70053, Med: 90190.9, Max: 111720
 
 ------------------------------------------
 
@@ -41,5 +41,10 @@ Min: 20740, Med: 20917, Max: 21116
 After optimization:
 Min: 19507, Med: 19595, Max: 19697  (-1322 on med)
 21.06%
+
+After further optimization (gap size):
+Min: 12366, Med: 12583, Max: 12875
+
+13.52%
 
 ------------------------------------------

@@ -3,6 +3,9 @@
 #include <string>
 
 int read_count = 0;
+int shell_read_count = 0;
+int reverse_shell_read_count = 0;
+int merge_read_count = 0;
 
 bool isOrdered(int* A, int n) {
   for (int i = 0; i < n - 1; ++i) {
@@ -10,50 +13,6 @@ bool isOrdered(int* A, int n) {
   }
 
   return true;
-}
-
-void insertionSort(int* A, int n) {
-  int i, j, key;
-  for (i = 1; i < n; ++i) {
-    key = A[i];
-    ++read_count;
-    j = i - 1;
-    while (j >= 0 && A[j] > key) {
-      ++read_count;
-      A[j + 1] = A[j];
-      ++read_count;
-      j = j - 1;
-    }
-    ++read_count;
-    A[j + 1] = key;
-    ++read_count;
-  }
-}
-
-void reverseInsertionSort(int* A, int n) {
-  int i, j, key;
-  for (i = n - 2; i >= 0; i--) {
-    key = A[i];
-    ++read_count;
-    j = i + 1;
-    while (j < n && A[j] > key) {
-      ++read_count;
-      A[j - 1] = A[j];
-      ++read_count;
-      j = j + 1;
-    }
-    ++read_count;
-    A[j - 1] = key;
-    ++read_count;
-  }
-
-  for (int i = 0; i < n / 2; ++i) {
-    int tmp = A[i];
-    ++read_count;
-    A[i] = A[n - i - 1];
-    ++read_count;
-    A[n - i - 1] = tmp;
-  }
 }
 
 void merge(int* A, int p, int q, int r) {
@@ -67,12 +26,14 @@ void merge(int* A, int p, int q, int r) {
   for (i = 0; i < q - p + 1; ++i) {
     L[i] = A[p + i];
     ++read_count;
+    ++merge_read_count;
   }
   int maxI = i;
 
   for (i = 0; i < r - q; ++i) {
     R[i] = A[q + 1 + i];
     ++read_count;
+    ++merge_read_count;
   }
   int maxJ = i;
 
@@ -83,6 +44,7 @@ void merge(int* A, int p, int q, int r) {
     int li = L[i];
     int rj = R[j];
     read_count += 2;
+    merge_read_count += 2;
 
     if (li <= rj) {
       A[k] = li;
@@ -96,6 +58,7 @@ void merge(int* A, int p, int q, int r) {
   while (i < maxI) {
     A[k] = L[i];
     ++read_count;
+    ++merge_read_count;
     ++i;
     ++k;
   }
@@ -103,25 +66,34 @@ void merge(int* A, int p, int q, int r) {
   while (j < maxJ) {
     A[k] = R[j];
     ++read_count;
+    ++merge_read_count;
     ++j;
     ++k;
   }
 }
 
+/*
+gap = n/2   gap change to 2         Min: 6552, Med: 6636, Max: 6696
+gap = n/2   gap change to 10        Min: 3531, Med: 3653, Max: 3781
+gap = n/2   gap change to 5         Min: 4173, Med: 4299, Max: 4445
+*/
 int shellSort(int A[], int n) {
-  for (int gap = n / 2; gap > 0; gap /= 2) {
+  for (int gap = n / 2; gap > 0; gap /= 12) { //?4
     for (int i = gap; i < n; i += 1) {
       int temp = A[i];
       ++read_count;
+      ++shell_read_count;
 
       int j;
       int tempWithGap = A[i - gap];  //?2
       ++read_count;
+      ++shell_read_count;
       for (j = i; j >= gap && tempWithGap > temp; j -= gap) {  //?2
         A[j] = tempWithGap;                                    //?2
         if (j >= gap + gap) {                                  //?2
           tempWithGap = A[j - gap - gap];                      //?2
           ++read_count;
+          ++shell_read_count;
         }
       }
 
@@ -131,20 +103,27 @@ int shellSort(int A[], int n) {
   return 0;
 }
 
+/*
+gap = n/2   gap change to 2         Min: 8107, Med: 8165, Max: 8241
+gap = n/2   gap change to 15        Min: 4000, Med: 4137, Max: 4291
+*/
 int reverseShellSort(int arr[], int n) {
-  for (int gap = n / 2; gap > 0; gap /= 2) {
+  for (int gap = n / 2; gap > 0; gap /= 15) { //?4
     for (int i = gap; i < n; i += 1) {
       int temp = arr[i];
-      read_count++;
+      ++read_count;
+      ++reverse_shell_read_count;
 
       int j;
       int tempWithGap = arr[i - gap];  //?3
       ++read_count;
+      ++reverse_shell_read_count;
       for (j = i; j >= gap && tempWithGap < temp; j -= gap) {  //?3
         arr[j] = tempWithGap;                                  //?3
         if (j >= gap + gap) {
           tempWithGap = arr[j - gap - gap];  //?3
           ++read_count;
+          ++reverse_shell_read_count;
         }
       }
 
@@ -154,9 +133,11 @@ int reverseShellSort(int arr[], int n) {
 
   for (int i = 0; i < n / 2; ++i) {
     int tmp = arr[i];
-    read_count++;
+    ++read_count;
+    ++reverse_shell_read_count;
     arr[i] = arr[n - i - 1];
-    read_count++;
+    ++read_count;
+    ++reverse_shell_read_count;
     arr[n - i - 1] = tmp;
   }
 
@@ -180,6 +161,19 @@ int main() {
   int read_min = -1;
   int read_max = -1;
   long read_avg = 0;
+
+  int merge_read_min = -1;
+  int merge_read_max = -1;
+  long merge_read_avg = 0;
+
+  int shell_read_min = -1;
+  int shell_read_max = -1;
+  long shell_read_avg = 0;
+
+  int reverse_shell_read_min = -1;
+  int reverse_shell_read_max = -1;
+  long reverse_shell_read_avg = 0;
+
   bool areOrdered[100];
 
   for (test = 0; test < 100; test++) {
@@ -192,56 +186,57 @@ int main() {
     }
 
     read_count = 0;
-    //! insertionSort(A, 250);
-    //! std::cout << "Insertion sort: " << read_count << std::endl;
+    shell_read_count = 0;
+    reverse_shell_read_count = 0;
+    merge_read_count = 0;
 
     shellSort(A, 250);
-    std::cout << "Shell sort -1: " << read_count << std::endl;
-
-    // reverseInsertionSort(A + 250, 250);
-    // std::cout << "Reverse insertion sort: " << read_count << std::endl;
-
-    // merge(A, 0, 249, 499);
-    // std::cout << "Merge 1: " << read_count << std::endl;
-
-    // reverseInsertionSort(A + 500, 250);
-    // std::cout << "Reverse insertion sort 2: " << read_count << std::endl;
-
-    //! reverseInsertionSort(A + 250, 500);
-    //! std::cout << "Reverse insertion sort: " << read_count << std::endl;
-
-    reverseShellSort(A + 250, 500);
-    std::cout << "Shell sort -2: " << read_count << std::endl;
-
-    merge(A, 0, 249, 749);
-    std::cout << "Merge 1: " << read_count << std::endl;
-
-    // merge(A, 0, 499, 749);
-    // std::cout << "Merge -2: " << read_count << std::endl;
-
-    //! insertionSort(A + 750, 250);
-    //! std::cout << "Insertion sort 2: " << read_count << std::endl;
-
-    shellSort(A + 750, 250);
     std::cout << "Shell sort 1: " << read_count << std::endl;
 
-    //! merge(A, 500, 749, 999);
-    //! std::cout << "Merge 2: " << read_count << std::endl;
+    reverseShellSort(A + 250, 500);
+    std::cout << "Shell sort 2: " << read_count << std::endl;
 
-    //! merge(A, 0, 499, 999);
-    //! std::cout << "Merge 3: " << read_count << std::endl;
+    merge(A, 0, 249, 749);
+    std::cout << "Merge 1+2: " << read_count << std::endl;
+
+    shellSort(A + 750, 250);
+    std::cout << "Shell sort 3: " << read_count << std::endl;
 
     merge(A, 0, 749, 999);
-    std::cout << "Merge 2: " << read_count << std::endl;
+    std::cout << "Merge (1+2)+3: " << read_count << std::endl;
 
     read_avg += read_count;
     if (read_min < 0 || read_min > read_count) read_min = read_count;
     if (read_max < 0 || read_max < read_count) read_max = read_count;
 
+    shell_read_avg += shell_read_count;
+    if (shell_read_min < 0 || shell_read_min > shell_read_count)
+      shell_read_min = shell_read_count;
+    if (shell_read_max < 0 || shell_read_max < shell_read_count)
+      shell_read_max = shell_read_count;
+
+    reverse_shell_read_avg += reverse_shell_read_count;
+    if (reverse_shell_read_min < 0 || reverse_shell_read_min > reverse_shell_read_count)
+      reverse_shell_read_min = reverse_shell_read_count;
+    if (reverse_shell_read_max < 0 || reverse_shell_read_max < reverse_shell_read_count)
+      reverse_shell_read_max = reverse_shell_read_count;
+
+    merge_read_avg += merge_read_count;
+    if (merge_read_min < 0 || merge_read_min > merge_read_count)
+      merge_read_min = merge_read_count;
+    if (merge_read_max < 0 || merge_read_max < merge_read_count)
+      merge_read_max = merge_read_count;
+
     areOrdered[test] = isOrdered(A, 1000);
+
+    std::cout << std::endl;
   }
   read_avg /= 100;
+  shell_read_avg /= 100;
+  reverse_shell_read_avg /= 100;
+  merge_read_avg /= 100;
 
+  std::cout << std::endl;
   std::cout << std::endl;
   for (int i = 0; i < 100; ++i)
     if (areOrdered[i] != true)
@@ -250,10 +245,41 @@ int main() {
   std::cout << "N test: 100" << std::endl;
   std::cout << "First 1000 element" << std::endl;
   std::cout << "Min: " << read_min << ", Med: " << read_avg << ", Max: " << read_max << std::endl;
+
+  std::cout << std::endl;
+  std::cout << "Shell sort read count" << std::endl;
+  std::cout << "Min: " << shell_read_min << ", Med: " << shell_read_avg << ", Max: " << shell_read_max << std::endl;
+
+  std::cout << std::endl;
+  std::cout << "Reverse shell sort read count" << std::endl;
+  std::cout << "Min: " << reverse_shell_read_min << ", Med: " << reverse_shell_read_avg << ", Max: " << reverse_shell_read_max << std::endl;
+
+  std::cout << std::endl;
+  std::cout << "Merge read count" << std::endl;
+  std::cout << "Min: " << merge_read_min << ", Med: " << merge_read_avg << ", Max: " << merge_read_max << std::endl;
 }
 
-//? Min: 20740, Med: 20917, Max: 21116
+//?  Min: 20740, Med: 20917, Max: 21116
 
 //?2 Min: 20116, Med: 20263, Max: 20438
 
 //?3 Min: 19507, Med: 19595, Max: 19697
+
+//?4 Min: 12366, Med: 12583, Max: 12875
+
+/*
+First 1000 element
+Min: 19507, Med: 19595, Max: 19697
+
+Shell sort read count
+Min: 6552, Med: 6636, Max: 6696
+
+Reverse shell sort read count
+Min: 8107, Med: 8165, Max: 8241
+
+Merge read count
+Min: 4775, Med: 4793, Max: 4807
+
+
+
+*/
