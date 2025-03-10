@@ -58,15 +58,12 @@ void merge(int* A, int p, int q, int r) {
     L[i] = A[p + i];
     ++read_count;
   }
-  L[i] = INT_MAX; /// max int
   int maxI = i;
-
 
   for (i = 0; i < r - q; ++i) {
     R[i] = A[q + 1 + i];
     ++read_count;
   }
-  R[i] = INT_MAX; /// max int
   int maxJ = i;
 
   i = 0;
@@ -80,8 +77,7 @@ void merge(int* A, int p, int q, int r) {
     if (li <= rj) {
       A[k] = li;
       ++i;
-    }
-    else {
+    } else {
       A[k] = rj;
       ++j;
     }
@@ -100,6 +96,9 @@ void merge(int* A, int p, int q, int r) {
     ++j;
     ++k;
   }
+
+  delete[] L;
+  delete[] R;
 }
 
 void swap(int& a, int& b) {
@@ -245,7 +244,7 @@ int reverseShellSort(int arr[], int n)
     }
   }
 
-  for(int i = 0; i < n / 2; ++i) {
+  for (int i = 0; i < n / 2; ++i) {
     int tmp = arr[i];
     read_count++;
     arr[i] = arr[n - i - 1];
@@ -256,6 +255,49 @@ int reverseShellSort(int arr[], int n)
   return 0;
 }
 
+//int min(int x, int y) {
+//  return (x < y) ? x : y;
+//}
+// Funzione principale del Block Sort
+void blockSort(int* arr, int n) {
+  const int BLOCK_SIZE = 32;
+  // 1. Dividere l'array in blocchi e ordinare ciascun blocco con Insertion Sort
+  for (int i = 0; i < n; i += BLOCK_SIZE) {
+    int end = min(i + BLOCK_SIZE, n);
+    insertion_sort(arr + i, end);
+  }
+
+  // 2. Unire i blocchi ordinati progressivamente
+  for (int size = BLOCK_SIZE; size < n; size *= 2) {
+    for (int left = 0; left < n; left += 2 * size) {
+      int mid = left + size - 1;
+      int right = min(left + 2 * size - 1, n - 1);
+      if (mid < right) {
+        merge(arr, left, mid, right);
+      }
+    }
+  }
+}
+
+void reverseBlockSort(int* arr, int n){
+  const int BLOCK_SIZE = 32;
+  // 1. Dividere l'array in blocchi e ordinare ciascun blocco con Insertion Sort
+  for (int i = 0; i < n; i += BLOCK_SIZE) {
+    int end = min(i + BLOCK_SIZE, n);
+    reverse_insertion_sort(arr + i, end);
+  }
+
+  // 2. Unire i blocchi ordinati progressivamente
+  for (int size = BLOCK_SIZE; size < n; size *= 2) {
+    for (int left = 0; left < n; left += 2 * size) {
+      int mid = left + size - 1;
+      int right = min(left + 2 * size - 1, n - 1);
+      if (mid < right) {
+        merge(arr, left, mid, right);
+      }
+    }
+  }
+}
 
 
 int main() {
@@ -433,5 +475,50 @@ int main() {
   }
   std::cout << std::endl;
   old = read_count;
-  
+
+  int a13[] = { 1,2,3,4,5,6,7,8,9,10 };
+  int a14[] = { 10,9,8,7,6,5,4,3,2,1 };
+
+  std::cout << std::endl;
+  for (int i = 0; i < 10;++i) {
+    std::cout << a13[i] << " ";
+  }
+  std::cout << std::endl;
+  blockSort(a13, 10);
+  std::cout << "Block with ordered: " << (read_count - old) << std::endl;
+  for (int i = 0; i < 10; ++i) {
+    std::cout << a13[i] << " ";
+  }
+  std::cout << std::endl;
+  old = read_count;
+
+  std::cout << std::endl;
+  for (int i = 0; i < 10;++i) {
+    std::cout << a14[i] << " ";
+  }
+  std::cout << std::endl;
+  blockSort(a14, 10);
+  std::cout << "Block with reversed ordered: " << (read_count - old) << std::endl;
+  for (int i = 0; i < 10; ++i) {
+    std::cout << a14[i] << " ";
+  }
+  std::cout << std::endl;
+  old = read_count;
+
+  int a15[] = { 1,2,3,4,5,6,7,8,9,10 };
+  int a16[] = { 10,9,8,7,6,5,4,3,2,1 };
+
+  std::cout << std::endl;
+  for (int i = 0; i < 10;++i) {
+    std::cout << a15[i] << " ";
+  }
+  std::cout << std::endl;
+  reverseBlockSort(a15, 10);
+  std::cout << "Reverse Block with ordered: " << (read_count - old) << std::endl;
+  for (int i = 0; i < 10; ++i) {
+    std::cout << a15[i] << " ";
+  }
+  std::cout << std::endl;
+  old = read_count;
+
 }
