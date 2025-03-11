@@ -2,10 +2,10 @@
 #include <iostream>
 #include <string>
 
+#define RUN 251 // Size of small chunks to use Insertion Sort
+
 int read_count = 0;
-int shell_read_count = 0;
-int reverse_shell_read_count = 0;
-int merge_read_count = 0;
+
 
 bool isOrdered(int* A, int n) {
   for (int i = 0; i < n - 1; ++i) {
@@ -15,27 +15,7 @@ bool isOrdered(int* A, int n) {
   return true;
 }
 
-
-// Funzione per ordinare un blocco con Insertion Sort
-void insertionSort(int* arr, int left, int right) {
-  for (int i = left + 1; i <= right; i++) {
-    int key = arr[i];
-    ++read_count;
-    int j = i - 1;
-
-    // Sposta gli elementi più grandi di key a destra
-    while (j >= left && arr[j] > key) {
-      ++read_count;
-      arr[j + 1] = arr[j];
-      ++read_count;
-      j--;
-    }
-    ++read_count;
-    arr[j + 1] = key;
-    ++read_count;
-  }
-}
-
+// Insertion Sort for small subarrays (O(n²) worst-case)
 void insertionSort(int* A, int n) {
   int i, j, key;
   for (i = 1; i < n; ++i) {
@@ -54,53 +34,7 @@ void insertionSort(int* A, int n) {
   }
 }
 
-// Funzione per unire due blocchi ordinati (merge simile a Merge Sort)
-void mergeBlocks(int* arr, int left, int mid, int right) {
-  int n1 = mid - left + 1;
-  int n2 = right - mid;
-
-  int* leftBlock = new int[n1];
-  int* rightBlock = new int[n2];
-
-  // Copia i dati nei blocchi temporanei
-  for (int i = 0; i < n1; i++) {
-    leftBlock[i] = arr[left + i];
-    ++read_count;
-  }
-  for (int i = 0; i < n2; i++) {
-    rightBlock[i] = arr[mid + 1 + i];
-    ++read_count;
-  }
-
-  int i = 0, j = 0, k = left;
-
-  // Merge dei due blocchi
-  while (i < n1 && j < n2) {
-    int leftValue = leftBlock[i];
-    ++read_count;
-    int rightValue = rightBlock[j];
-    ++read_count;
-    if (leftValue <= rightValue) {
-      arr[k++] = leftValue;
-      ++read_count;
-    }
-    else {
-      arr[k++] = rightValue;
-      ++read_count;
-    }
-  }
-
-  // Copia gli elementi rimanenti
-  while (i < n1) {
-    arr[k++] = leftBlock[i++];
-    ++read_count;
-  }
-  while (j < n2) {
-    arr[k++] = rightBlock[j++];
-    ++read_count;
-  }
-}
-
+// Merge function (like in Merge Sort)
 void merge(int* A, int p, int q, int r) {
   int* L = new int[r - p + 1];
   int* R = new int[r - p + 1];
@@ -112,14 +46,12 @@ void merge(int* A, int p, int q, int r) {
   for (i = 0; i < q - p + 1; ++i) {
     L[i] = A[p + i];
     ++read_count;
-    ++merge_read_count;
   }
   int maxI = i;
 
   for (i = 0; i < r - q; ++i) {
     R[i] = A[q + 1 + i];
     ++read_count;
-    ++merge_read_count;
   }
   int maxJ = i;
 
@@ -130,12 +62,12 @@ void merge(int* A, int p, int q, int r) {
     int li = L[i];
     int rj = R[j];
     read_count += 2;
-    merge_read_count += 2;
 
     if (li <= rj) {
       A[k] = li;
       ++i;
-    } else {
+    }
+    else {
       A[k] = rj;
       ++j;
     }
@@ -144,7 +76,6 @@ void merge(int* A, int p, int q, int r) {
   while (i < maxI) {
     A[k] = L[i];
     ++read_count;
-    ++merge_read_count;
     ++i;
     ++k;
   }
@@ -152,45 +83,46 @@ void merge(int* A, int p, int q, int r) {
   while (j < maxJ) {
     A[k] = R[j];
     ++read_count;
-    ++merge_read_count;
     ++j;
     ++k;
   }
 }
 
-int min(int x, int y) {
-  return (x < y) ? x : y;
+int min(int a, int b) {
+    return a < b ? a : b;
 }
-// Funzione principale del Block Sort
-void blockSort(int* arr, int n) {
-  const int BLOCK_SIZE = 264;
-  // 1. Dividere l'array in blocchi e ordinare ciascun blocco con Insertion Sort
-  for (int i = 0; i < n; i += BLOCK_SIZE) {
-    int end = min(i + BLOCK_SIZE - 1, n - 1);
-    insertionSort(arr + i, end);
-  }
+// Iterative Timsort function
+void timSort(int arr[], int n) {
+    // Step 1: Sort small chunks with Insertion Sort
+    for (int i = 0; i < n; i += RUN)
+        insertionSort(arr + i, min(i + RUN - 1, n - 1));
 
-  // 2. Unire i blocchi ordinati progressivamente
-  for (int size = BLOCK_SIZE; size < n; size *= 2) {
-    for (int left = 0; left < n; left += 2 * size) {
-      int mid = left + size - 1;
-      int right = min(left + 2 * size - 1, n - 1);
-      if (mid < right) {
-        merge(arr, left, mid, right);
-      }
+    // Step 2: Merge adjacent runs iteratively
+    for (int size = RUN; size < n; size = 2 * size) {
+        for (int left = 0; left < n; left += 2 * size) {
+            int mid = left + size - 1;
+            int right = min(left + 2 * size - 1, n - 1);
+
+            if (mid < right) // Only merge if valid
+                merge(arr, left, mid, right);
+        }
     }
-  }
 }
 
-// Funzione per stampare l'array
-void printArray(const int* arr, int n) {
-  for (int i = 0; i < n; i++) {
-    std::cout << arr[i] << " ";
-  }
-  std::cout << std::endl;
+// Function to generate random data
+void generateData(int arr[], int n) {
+    for (int i = 0; i < n; i++)
+        arr[i] = rand() % 10000;  // Random numbers from 0 to 9999
 }
 
-// Funzione principale
+// Function to print array
+void printArray(int arr[], int n) {
+    for (int i = 0; i < n; i++)
+        std::cout << arr[i] << " ";
+    std::cout << std::endl;
+}
+
+// Main function to test Timsort
 int main() {
   int i, test;
   int* A;
@@ -233,8 +165,8 @@ int main() {
     }
 
     read_count = 0;
-
-    blockSort(A, 1000);
+    
+    timSort(A, 1000);
 
     read_avg += read_count;
     if (read_min < 0 || read_min > read_count) read_min = read_count;

@@ -57,3 +57,6 @@ Shell 750..999
 triple merge 0..249+250..749+750...999
 
 Min: 11116, Med: 11333, Max: 11625
+
+After optimization (limit the read of L)
+Min: 10640, Med: 10857, Max: 11148

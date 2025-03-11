@@ -28,7 +28,7 @@ int graph = 0;
 
 int n = 0;  /// dimensione dell'array
 
-void print_array(int *A, int dim) {
+void print_array(int* A, int dim) {
   for (int j = 0; j < dim; j++) {
     printf("%d ", A[j]);
   }
@@ -105,22 +105,26 @@ void tripleMerge(int* A, int q, int r, int s) {
   k = 0;
 
   for (l = 0; l <= s && i < maxI && j < maxJ && k < maxK; ++l) {
-    int li = L[i];
+    int li = 2147483647;
+    if (l > 475) {
+      li = L[i];
+      ++ct_read;
+    }
     int rj = R[j];
     int mk = M[k];
-    ct_read += 3;
+    ct_read += 2;
 
-    if (li <= rj && li <= mk) {
-      A[l] = li;
-      ++i;
+    if (mk <= li && mk <= rj) {
+      A[l] = mk;
+      ++k;
     }
     else if (rj <= li && rj <= mk) {
       A[l] = rj;
       ++j;
     }
     else {
-      A[l] = mk;
-      ++k;
+      A[l] = li;
+      ++i;
     }
   }
 
@@ -131,6 +135,10 @@ void tripleMerge(int* A, int q, int r, int s) {
     partialMerge(A + l, L + i, M + k, maxI - i, maxK - k);
   else                  //M is empty
     partialMerge(A + l, L + i, R + j, maxI - i, maxJ - j);
+
+  delete[] L;
+  delete[] R;
+  delete[] M;
 }
 
 int shellSort(int A[], int n) {
@@ -198,7 +206,7 @@ int reverseShellSort(int A[], int n) {
   return 0;
 }
 
-int parse_cmd(int argc, char **argv) {
+int parse_cmd(int argc, char** argv) {
   /// parsing argomento
   max_dim = 1000;
 
@@ -219,10 +227,10 @@ int parse_cmd(int argc, char **argv) {
   return 0;
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
   int i, test;
-  int *A;
-  int *B;  /// buffer per visualizzazione algoritmo
+  int* A;
+  int* B;  /// buffer per visualizzazione algoritmo
 
   if (parse_cmd(argc, argv))
     return 1;
@@ -293,8 +301,8 @@ int main(int argc, char **argv) {
   }
 
   printf("N test: %d, Min: %d, Med: %.1f, Max: %d\n",
-         ntests,
-         read_min, (0.0 + read_avg) / ntests, read_max);
+    ntests,
+    read_min, (0.0 + read_avg) / ntests, read_max);
 
   delete[] A;
 

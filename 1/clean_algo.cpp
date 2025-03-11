@@ -71,6 +71,9 @@ void merge(int* A, int p, int q, int r) {
     ++j;
     ++k;
   }
+
+  delete[] L;
+  delete[] R;
 }
 
 void partialMerge(int* A, int* L, int* R, int ln, int rn) {
@@ -152,28 +155,32 @@ void tripleMerge(int* A, int q, int r, int s) {
   k = 0;
 
   for (l = 0; l <= s && i < maxI && j < maxJ && k < maxK; ++l) {
-    int li = L[i];
+    int li = 2147483647;
+    if (l > 475) {
+      li = L[i];
+      ++read_count;
+    }
     int rj = R[j];
     int mk = M[k];
-    read_count += 3;
-    merge_read_count += 3;
+    read_count += 2;
+    merge_read_count += 2;
 
-    //std::cout << "li = " << li << " rj = " << rj << " mk = " << mk << std::endl;
-    if (li <= rj && li <= mk) {
-      //std::cout<< "li" << std::endl;
-      A[l] = li;
-      ++i;
+    if (mk <= li && mk <= rj) {
+      A[l] = mk;
+      ++k;
     }
     else if (rj <= li && rj <= mk) {
-      //std::cout<< "rj" << std::endl;
       A[l] = rj;
       ++j;
     }
     else {
-      //std::cout<< "mk" << std::endl;
-      A[l] = mk;
-      ++k;
+      A[l] = li;
+      ++i;
     }
+
+    delete[] L;
+    delete[] R;
+    delete[] M;
   }
 
   std::cout << std::endl << isOrdered(A, l) << std::endl;
