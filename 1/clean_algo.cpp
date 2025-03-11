@@ -177,10 +177,6 @@ void tripleMerge(int* A, int q, int r, int s) {
       A[l] = li;
       ++i;
     }
-
-    delete[] L;
-    delete[] R;
-    delete[] M;
   }
 
   std::cout << std::endl << isOrdered(A, l) << std::endl;
@@ -191,6 +187,10 @@ void tripleMerge(int* A, int q, int r, int s) {
     partialMerge(A + l, L + i, M + k, maxI - i, maxK - k);
   else                  //M is empty
     partialMerge(A + l, L + i, R + j, maxI - i, maxJ - j);
+
+  delete[] L;
+  delete[] R;
+  delete[] M;
 }
 
 /*
