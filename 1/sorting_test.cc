@@ -36,14 +36,6 @@ void reverse_insertion_sort(int* a, int n) {
     a[j - 1] = key;
     read_count++;
   }
-
-  for (int i = 0; i < n / 2;++i) {
-    int tmp = a[i];
-    read_count++;
-    a[i] = a[n - i - 1];
-    read_count++;
-    a[n - i - 1] = tmp;
-  }
 }
 
 void merge(int* A, int p, int q, int r) {

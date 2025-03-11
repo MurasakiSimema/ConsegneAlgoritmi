@@ -246,6 +246,48 @@ void reverseShellSort(int arr[], int n) {
   }
 }
 
+void insertionSort(int* A, int n) {
+  int i, j, key;
+  for (i = 1; i < n; ++i) {
+    key = A[i];
+    ++read_count;
+    ++shell_read_count;
+    j = i - 1;
+    while (j >= 0 && A[j] > key) {
+      ++read_count;
+      ++shell_read_count;
+      A[j + 1] = A[j];
+      ++read_count;
+      ++shell_read_count;
+      j = j - 1;
+    }
+    ++read_count;
+    ++shell_read_count;
+    A[j + 1] = key;
+    ++read_count;
+    ++shell_read_count;
+  }
+}
+
+void reverseInsertionSort(int* A, int n) {
+  //insertion sort but with reversed loop
+  int i, j, key;
+  for (i = n - 2; i >= 0; i--) {
+    key = A[i];
+    ++read_count;
+    j = i + 1;
+    while (j < n && A[j] > key) {
+      ++read_count;
+      A[j - 1] = A[j];
+      ++read_count;
+      j = j + 1;
+    }
+    ++read_count;
+    A[j - 1] = key;
+    ++read_count;
+  }
+}
+
 int main() {
   int i, test;
   int* A;
@@ -292,7 +334,7 @@ int main() {
     reverse_shell_read_count = 0;
     merge_read_count = 0;
 
-    shellSort(A, 250);
+    insertionSort(A, 250);
     std::cout << "Shell sort 1: " << read_count << " " << isOrdered(A, 250) << std::endl;
 
     reverseShellSort(A + 250, 500);
@@ -365,28 +407,3 @@ int main() {
   std::cout << "Merge read count" << std::endl;
   std::cout << "Min: " << merge_read_min << ", Med: " << merge_read_avg << ", Max: " << merge_read_max << std::endl;
 }
-
-//?  Min: 20740, Med: 20917, Max: 21116
-
-//?2 Min: 20116, Med: 20263, Max: 20438
-
-//?3 Min: 19507, Med: 19595, Max: 19697
-
-//?4 Min: 12366, Med: 12583, Max: 12875
-
-/*
-First 1000 element
-Min: 19507, Med: 19595, Max: 19697
-
-Shell sort read count
-Min: 6552, Med: 6636, Max: 6696
-
-Reverse shell sort read count
-Min: 8107, Med: 8165, Max: 8241
-
-Merge read count
-Min: 4775, Med: 4793, Max: 4807
-
-
-
-*/

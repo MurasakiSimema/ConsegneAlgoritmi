@@ -69,3 +69,12 @@ Shell 750..999
 triple merge with reverse center 0..249+250..749+750...999
 
 Min: 10140, Med: 10357, Max: 10648
+
+------------------------------------------
+
+Insertion 0..249
+Reverse shell 250..749
+Shell 750..999
+triple merge with reverse center 0..249+250..749+750...999
+
+Min: 9784, Med: 9974, Max: 10277
