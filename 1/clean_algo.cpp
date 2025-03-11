@@ -49,7 +49,8 @@ void merge(int* A, int p, int q, int r) {
     if (li <= rj) {
       A[k] = li;
       ++i;
-    } else {
+    }
+    else {
       A[k] = rj;
       ++j;
     }
@@ -72,13 +73,126 @@ void merge(int* A, int p, int q, int r) {
   }
 }
 
+void partialMerge(int* A, int* L, int* R, int ln, int rn) {
+  int i = 0;
+  int j = 0;
+  int k = 0;
+
+  int n = ln + rn;
+
+  for (k = 0; k <= n && i < ln && j < rn; ++k) {
+    int li = L[i];
+    int rj = R[j];
+    read_count += 2;
+    merge_read_count += 2;
+
+    if (li <= rj) {
+      A[k] = li;
+      ++i;
+    }
+    else {
+      A[k] = rj;
+      ++j;
+    }
+  }
+
+  while (i < ln) {
+    A[k] = L[i];
+    ++read_count;
+    ++merge_read_count;
+    ++i;
+    ++k;
+  }
+
+  while (j < rn) {
+    A[k] = R[j];
+    ++read_count;
+    ++merge_read_count;
+    ++j;
+    ++k;
+  }
+}
+
+void tripleMerge(int* A, int q, int r, int s) {
+  int* L = new int[800];
+  int* R = new int[800];
+  int* M = new int[800];
+
+  int i = 0;
+  int j = 0;
+  int k = 0;
+  int l = 0;
+
+  for (i = 0; i < q + 1; ++i) {
+    L[i] = A[i];
+    ++read_count;
+    ++merge_read_count;
+  }
+  int maxI = i;
+  std::cout << "L: " << isOrdered(L, maxI) << std::endl;
+
+  for (i = 0; i < r - q; ++i) {
+    R[i] = A[q + 1 + i];
+    ++read_count;
+    ++merge_read_count;
+  }
+  int maxJ = i;
+  std::cout << "R: " << isOrdered(R, maxJ) << std::endl;
+
+  for (i = 0; i < s - r; ++i) {
+    M[i] = A[r + 1 + i];
+    ++read_count;
+    ++merge_read_count;
+  }
+  int maxK = i;
+  std::cout << "M: " << isOrdered(M, maxK) << std::endl;
+
+  i = 0;
+  j = 0;
+  k = 0;
+
+  for (l = 0; l <= s && i < maxI && j < maxJ && k < maxK; ++l) {
+    int li = L[i];
+    int rj = R[j];
+    int mk = M[k];
+    read_count += 3;
+    merge_read_count += 3;
+
+    //std::cout << "li = " << li << " rj = " << rj << " mk = " << mk << std::endl;
+    if (li <= rj && li <= mk) {
+      //std::cout<< "li" << std::endl;
+      A[l] = li;
+      ++i;
+    }
+    else if (rj <= li && rj <= mk) {
+      //std::cout<< "rj" << std::endl;
+      A[l] = rj;
+      ++j;
+    }
+    else {
+      //std::cout<< "mk" << std::endl;
+      A[l] = mk;
+      ++k;
+    }
+  }
+
+  std::cout << std::endl << isOrdered(A, l) << std::endl;
+
+  if (i >= maxI)        //L is empty
+    partialMerge(A + l, R + j, M + k, maxJ - j, maxK - k);
+  else if (j >= maxJ)   //R is empty
+    partialMerge(A + l, L + i, M + k, maxI - i, maxK - k);
+  else                  //M is empty
+    partialMerge(A + l, L + i, R + j, maxI - i, maxJ - j);
+}
+
 /*
 gap = n/2   gap change to 2         Min: 6552, Med: 6636, Max: 6696
 gap = n/2   gap change to 10        Min: 3531, Med: 3653, Max: 3781
 gap = n/2   gap change to 5         Min: 4173, Med: 4299, Max: 4445
 */
 int shellSort(int A[], int n) {
-  for (int gap = n / 2; gap > 0; gap /= 12) { //?4
+  for (int gap = n / 2; gap > 0; gap /= 10) { //?4
     for (int i = gap; i < n; i += 1) {
       int temp = A[i];
       ++read_count;
@@ -191,19 +305,24 @@ int main() {
     merge_read_count = 0;
 
     shellSort(A, 250);
-    std::cout << "Shell sort 1: " << read_count << std::endl;
+    std::cout << "Shell sort 1: " << read_count << " " << isOrdered(A, 250) << std::endl;
 
     reverseShellSort(A + 250, 500);
-    std::cout << "Shell sort 2: " << read_count << std::endl;
+    std::cout << "Shell sort 2: " << read_count << " " << isOrdered(A + 250, 500) << std::endl;
 
-    merge(A, 0, 249, 749);
-    std::cout << "Merge 1+2: " << read_count << std::endl;
+    //merge(A, 0, 249, 749);
+    //std::cout << "Merge 1+2: " << read_count << std::endl;
 
     shellSort(A + 750, 250);
-    std::cout << "Shell sort 3: " << read_count << std::endl;
+    std::cout << "Shell sort 3: " << read_count << " " << isOrdered(A + 750, 250) << std::endl;
 
-    merge(A, 0, 749, 999);
-    std::cout << "Merge (1+2)+3: " << read_count << std::endl;
+    //merge(A, 0, 749, 999);
+    //std::cout << "Merge (1+2)+3: " << read_count << std::endl;
+
+    tripleMerge(A, 249, 749, 999);
+    std::cout << "Merge 1+2+3: " << read_count << " " << isOrdered(A, 1000) << std::endl;
+
+    //shellSort(A, 1000);
 
     read_avg += read_count;
     if (read_min < 0 || read_min > read_count) read_min = read_count;
@@ -229,7 +348,7 @@ int main() {
 
     areOrdered[test] = isOrdered(A, 1000);
 
-    std::cout << std::endl;
+    //std::cout << std::endl;
   }
   read_avg /= 100;
   shell_read_avg /= 100;

@@ -35,16 +35,55 @@ void print_array(int *A, int dim) {
   printf("\n");
 }
 
-void merge(int *A, int p, int q, int r) {
-  int *L = new int[r - p + 1];
-  int *R = new int[r - p + 1];
-
+void partialMerge(int* A, int* L, int* R, int ln, int rn) {
   int i = 0;
   int j = 0;
   int k = 0;
 
-  for (i = 0; i < q - p + 1; ++i) {
-    L[i] = A[p + i];
+  int n = ln + rn;
+
+  for (k = 0; k <= n && i < ln && j < rn; ++k) {
+    int li = L[i];
+    int rj = R[j];
+    ct_read += 2;
+
+    if (li <= rj) {
+      A[k] = li;
+      ++i;
+    }
+    else {
+      A[k] = rj;
+      ++j;
+    }
+  }
+
+  while (i < ln) {
+    A[k] = L[i];
+    ++ct_read;
+    ++i;
+    ++k;
+  }
+
+  while (j < rn) {
+    A[k] = R[j];
+    ++ct_read;
+    ++j;
+    ++k;
+  }
+}
+
+void tripleMerge(int* A, int q, int r, int s) {
+  int* L = new int[800];
+  int* R = new int[800];
+  int* M = new int[800];
+
+  int i = 0;
+  int j = 0;
+  int k = 0;
+  int l = 0;
+
+  for (i = 0; i < q + 1; ++i) {
+    L[i] = A[i];
     ++ct_read;
   }
   int maxI = i;
@@ -55,36 +94,43 @@ void merge(int *A, int p, int q, int r) {
   }
   int maxJ = i;
 
+  for (i = 0; i < s - r; ++i) {
+    M[i] = A[r + 1 + i];
+    ++ct_read;
+  }
+  int maxK = i;
+
   i = 0;
   j = 0;
+  k = 0;
 
-  for (k = p; k <= r && i < maxI && j < maxJ; ++k) {
+  for (l = 0; l <= s && i < maxI && j < maxJ && k < maxK; ++l) {
     int li = L[i];
     int rj = R[j];
-    ct_read += 2;
+    int mk = M[k];
+    ct_read += 3;
 
-    if (li <= rj) {
-      A[k] = li;
+    if (li <= rj && li <= mk) {
+      A[l] = li;
       ++i;
-    } else {
-      A[k] = rj;
+    }
+    else if (rj <= li && rj <= mk) {
+      A[l] = rj;
       ++j;
+    }
+    else {
+      A[l] = mk;
+      ++k;
     }
   }
 
-  while (i < maxI) {
-    A[k] = L[i];
-    ++ct_read;
-    ++i;
-    ++k;
-  }
 
-  while (j < maxJ) {
-    A[k] = R[j];
-    ++ct_read;
-    ++j;
-    ++k;
-  }
+  if (i >= maxI)        //L is empty
+    partialMerge(A + l, R + j, M + k, maxJ - j, maxK - k);
+  else if (j >= maxJ)   //R is empty
+    partialMerge(A + l, L + i, M + k, maxI - i, maxK - k);
+  else                  //M is empty
+    partialMerge(A + l, L + i, R + j, maxI - i, maxJ - j);
 }
 
 int shellSort(int A[], int n) {
@@ -228,10 +274,9 @@ int main(int argc, char **argv) {
     /// algoritmo di sorting
     shellSort(A, 250);
     reverseShellSort(A + 250, 500);
-    merge(A, 0, 249, 749);
-
     shellSort(A + 750, 250);
-    merge(A, 0, 749, 999);
+
+    tripleMerge(A, 249, 749, 999);
 
     if (details) {
       printf("Output:\n");
