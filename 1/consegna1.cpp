@@ -67,7 +67,7 @@ void merge(int* A, int p, int q, int r) {
   delete[] R;
 }
 
-int shellSort(int A[], int n) {
+void shellSort(int A[], int n) {
   // Start with a big gap, then reduce the gap
   for (int gap = n / 2; gap > 0; gap /= 10) {  //?4
     // Do a gapped insertion sort for this gap size.
@@ -97,10 +97,10 @@ int shellSort(int A[], int n) {
       A[j] = temp;
     }
   }
-  return 0;
+  
 }
 
-int reverseShellSort(int A[], int n) {
+void reverseShellSort(int A[], int n) {
   for (int gap = n / 2; gap > 0; gap /= 15) {  //?4
     for (int i = gap; i < n; i += 1) {
       int temp = A[i];
@@ -129,7 +129,7 @@ int reverseShellSort(int A[], int n) {
     A[n - i - 1] = tmp;
   }
 
-  return 0;
+  
 }
 
 int main() {

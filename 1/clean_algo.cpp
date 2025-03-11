@@ -49,8 +49,7 @@ void merge(int* A, int p, int q, int r) {
     if (li <= rj) {
       A[k] = li;
       ++i;
-    }
-    else {
+    } else {
       A[k] = rj;
       ++j;
     }
@@ -92,8 +91,7 @@ void partialMerge(int* A, int* L, int* R, int ln, int rn) {
     if (li <= rj) {
       A[k] = li;
       ++i;
-    }
-    else {
+    } else {
       A[k] = rj;
       ++j;
     }
@@ -168,24 +166,23 @@ void tripleMerge(int* A, int q, int r, int s) {
     if (mk <= li && mk <= rj) {
       A[l] = mk;
       ++k;
-    }
-    else if (rj <= li && rj <= mk) {
+    } else if (rj <= li && rj <= mk) {
       A[l] = rj;
       ++j;
-    }
-    else {
+    } else {
       A[l] = li;
       ++i;
     }
   }
 
-  std::cout << std::endl << isOrdered(A, l) << std::endl;
+  std::cout << std::endl
+            << isOrdered(A, l) << std::endl;
 
-  if (i >= maxI)        //L is empty
+  if (i >= maxI)  // L is empty
     partialMerge(A + l, R + j, M + k, maxJ - j, maxK - k);
-  else if (j >= maxJ)   //R is empty
+  else if (j >= maxJ)  // R is empty
     partialMerge(A + l, L + i, M + k, maxI - i, maxK - k);
-  else                  //M is empty
+  else  // M is empty
     partialMerge(A + l, L + i, R + j, maxI - i, maxJ - j);
 
   delete[] L;
@@ -198,8 +195,8 @@ gap = n/2   gap change to 2         Min: 6552, Med: 6636, Max: 6696
 gap = n/2   gap change to 10        Min: 3531, Med: 3653, Max: 3781
 gap = n/2   gap change to 5         Min: 4173, Med: 4299, Max: 4445
 */
-int shellSort(int A[], int n) {
-  for (int gap = n / 2; gap > 0; gap /= 10) { //?4
+void shellSort(int A[], int n) {
+  for (int gap = n / 2; gap > 0; gap /= 10) {  //?4
     for (int i = gap; i < n; i += 1) {
       int temp = A[i];
       ++read_count;
@@ -221,15 +218,15 @@ int shellSort(int A[], int n) {
       A[j] = temp;
     }
   }
-  return 0;
+  
 }
 
 /*
 gap = n/2   gap change to 2         Min: 8107, Med: 8165, Max: 8241
 gap = n/2   gap change to 15        Min: 4000, Med: 4137, Max: 4291
 */
-int reverseShellSort(int arr[], int n) {
-  for (int gap = n / 2; gap > 0; gap /= 15) { //?4
+void reverseShellSort(int arr[], int n) {
+  for (int gap = n / 2; gap > 0; gap /= 15) {  //?4
     for (int i = gap; i < n; i += 1) {
       int temp = arr[i];
       ++read_count;
@@ -262,7 +259,7 @@ int reverseShellSort(int arr[], int n) {
     arr[n - i - 1] = tmp;
   }
 
-  return 0;
+  
 }
 
 int main() {
@@ -317,19 +314,19 @@ int main() {
     reverseShellSort(A + 250, 500);
     std::cout << "Shell sort 2: " << read_count << " " << isOrdered(A + 250, 500) << std::endl;
 
-    //merge(A, 0, 249, 749);
-    //std::cout << "Merge 1+2: " << read_count << std::endl;
+    // merge(A, 0, 249, 749);
+    // std::cout << "Merge 1+2: " << read_count << std::endl;
 
     shellSort(A + 750, 250);
     std::cout << "Shell sort 3: " << read_count << " " << isOrdered(A + 750, 250) << std::endl;
 
-    //merge(A, 0, 749, 999);
-    //std::cout << "Merge (1+2)+3: " << read_count << std::endl;
+    // merge(A, 0, 749, 999);
+    // std::cout << "Merge (1+2)+3: " << read_count << std::endl;
 
     tripleMerge(A, 249, 749, 999);
     std::cout << "Merge 1+2+3: " << read_count << " " << isOrdered(A, 1000) << std::endl;
 
-    //shellSort(A, 1000);
+    // shellSort(A, 1000);
 
     read_avg += read_count;
     if (read_min < 0 || read_min > read_count) read_min = read_count;
@@ -355,7 +352,7 @@ int main() {
 
     areOrdered[test] = isOrdered(A, 1000);
 
-    //std::cout << std::endl;
+    // std::cout << std::endl;
   }
   read_avg /= 100;
   shell_read_avg /= 100;

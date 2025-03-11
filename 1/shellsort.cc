@@ -1,4 +1,4 @@
-int shellSort(int arr[], int n)
+void shellSort(int arr[], int n)
 {
     // Start with a big gap, then reduce the gap
     for (int gap = n/2; gap > 0; gap /= 2)
@@ -23,7 +23,7 @@ int shellSort(int arr[], int n)
             arr[j] = temp;
         }
     }
-    return 0;
+    
 }
 
 void printArray(int arr[], int n)
