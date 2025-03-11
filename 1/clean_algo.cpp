@@ -114,10 +114,10 @@ void partialMerge(int* A, int* L, int* R, int ln, int rn) {
   }
 }
 
-void tripleMerge(int* A, int q, int r, int s) {
-  int* L = new int[800];
-  int* R = new int[800];
-  int* M = new int[800];
+void tripleMergeWithReverseCenter(int* A, int q, int r, int s) {
+  int* L = new int[q];
+  int* R = new int[r - q];
+  int* M = new int[s - r];
 
   int i = 0;
   int j = 0;
@@ -133,7 +133,7 @@ void tripleMerge(int* A, int q, int r, int s) {
   std::cout << "L: " << isOrdered(L, maxI) << std::endl;
 
   for (i = 0; i < r - q; ++i) {
-    R[i] = A[q + 1 + i];
+    R[i] = A[r - i];
     ++read_count;
     ++merge_read_count;
   }
@@ -153,7 +153,7 @@ void tripleMerge(int* A, int q, int r, int s) {
   k = 0;
 
   for (l = 0; l <= s && i < maxI && j < maxJ && k < maxK; ++l) {
-    int li = 2147483647;  //MAX_INT
+    int li = 2147483647;  // MAX_INT
     if (l > 475) {
       li = L[i];
       ++read_count;
@@ -174,8 +174,6 @@ void tripleMerge(int* A, int q, int r, int s) {
       ++i;
     }
   }
-
-  std::cout << std::endl << isOrdered(A, l) << std::endl;
 
   if (i >= maxI)  // L is empty
     partialMerge(A + l, R + j, M + k, maxJ - j, maxK - k);
@@ -217,7 +215,6 @@ void shellSort(int A[], int n) {
       A[j] = temp;
     }
   }
-  
 }
 
 /*
@@ -247,18 +244,6 @@ void reverseShellSort(int arr[], int n) {
       arr[j] = temp;
     }
   }
-
-  for (int i = 0; i < n / 2; ++i) {
-    int tmp = arr[i];
-    ++read_count;
-    ++reverse_shell_read_count;
-    arr[i] = arr[n - i - 1];
-    ++read_count;
-    ++reverse_shell_read_count;
-    arr[n - i - 1] = tmp;
-  }
-
-  
 }
 
 int main() {
@@ -322,7 +307,7 @@ int main() {
     // merge(A, 0, 749, 999);
     // std::cout << "Merge (1+2)+3: " << read_count << std::endl;
 
-    tripleMerge(A, 249, 749, 999);
+    tripleMergeWithReverseCenter(A, 249, 749, 999);
     std::cout << "Merge 1+2+3: " << read_count << " " << isOrdered(A, 1000) << std::endl;
 
     // shellSort(A, 1000);
@@ -351,7 +336,7 @@ int main() {
 
     areOrdered[test] = isOrdered(A, 1000);
 
-    //std::cout << std::endl;
+    // std::cout << std::endl;
   }
   read_avg /= 100;
   shell_read_avg /= 100;

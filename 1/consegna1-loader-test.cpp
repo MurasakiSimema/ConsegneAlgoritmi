@@ -72,10 +72,10 @@ void partialMerge(int* A, int* L, int* R, int ln, int rn) {
   }
 }
 
-void tripleMerge(int* A, int q, int r, int s) {
-  int* L = new int[800];
-  int* R = new int[800];
-  int* M = new int[800];
+void tripleMergeWithReverseCenter(int* A, int q, int r, int s) {
+  int* L = new int[q];
+  int* R = new int[r - q];
+  int* M = new int[s - r];
 
   int i = 0;
   int j = 0;
@@ -89,7 +89,7 @@ void tripleMerge(int* A, int q, int r, int s) {
   int maxI = i;
 
   for (i = 0; i < r - q; ++i) {
-    R[i] = A[q + 1 + i];
+    R[i] = A[r - i];
     ++ct_read;
   }
   int maxJ = i;
@@ -171,7 +171,6 @@ void shellSort(int A[], int n) {
       A[j] = temp;
     }
   }
-  
 }
 
 void reverseShellSort(int A[], int n) {
@@ -194,16 +193,6 @@ void reverseShellSort(int A[], int n) {
       A[j] = temp;
     }
   }
-
-  for (int i = 0; i < n / 2; ++i) {
-    int tmp = A[i];
-    ++ct_read;
-    A[i] = A[n - i - 1];
-    ++ct_read;
-    A[n - i - 1] = tmp;
-  }
-
-  
 }
 
 int parse_cmd(int argc, char** argv) {
@@ -284,7 +273,7 @@ int main(int argc, char** argv) {
     reverseShellSort(A + 250, 500);
     shellSort(A + 750, 250);
 
-    tripleMerge(A, 249, 749, 999);
+    tripleMergeWithReverseCenter(A, 249, 749, 999);
 
     if (details) {
       printf("Output:\n");
