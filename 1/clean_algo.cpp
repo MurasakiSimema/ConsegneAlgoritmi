@@ -153,7 +153,7 @@ void tripleMerge(int* A, int q, int r, int s) {
   k = 0;
 
   for (l = 0; l <= s && i < maxI && j < maxJ && k < maxK; ++l) {
-    int li = 2147483647;
+    int li = 2147483647;  //MAX_INT
     if (l > 475) {
       li = L[i];
       ++read_count;
@@ -175,8 +175,7 @@ void tripleMerge(int* A, int q, int r, int s) {
     }
   }
 
-  std::cout << std::endl
-            << isOrdered(A, l) << std::endl;
+  std::cout << std::endl << isOrdered(A, l) << std::endl;
 
   if (i >= maxI)  // L is empty
     partialMerge(A + l, R + j, M + k, maxJ - j, maxK - k);
@@ -312,7 +311,7 @@ int main() {
     std::cout << "Shell sort 1: " << read_count << " " << isOrdered(A, 250) << std::endl;
 
     reverseShellSort(A + 250, 500);
-    std::cout << "Shell sort 2: " << read_count << " " << isOrdered(A + 250, 500) << std::endl;
+    std::cout << "Reverse shell sort 2: " << read_count << " " << isOrdered(A + 250, 500) << std::endl;
 
     // merge(A, 0, 249, 749);
     // std::cout << "Merge 1+2: " << read_count << std::endl;
@@ -352,7 +351,7 @@ int main() {
 
     areOrdered[test] = isOrdered(A, 1000);
 
-    // std::cout << std::endl;
+    //std::cout << std::endl;
   }
   read_avg /= 100;
   shell_read_avg /= 100;
