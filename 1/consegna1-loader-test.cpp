@@ -50,8 +50,7 @@ void partialMerge(int* A, int* L, int* R, int ln, int rn) {
     if (li <= rj) {
       A[k] = li;
       ++i;
-    }
-    else {
+    } else {
       A[k] = rj;
       ++j;
     }
@@ -72,7 +71,7 @@ void partialMerge(int* A, int* L, int* R, int ln, int rn) {
   }
 }
 
-void tripleMergeWithReverseCenter(int* A, int q, int r, int s) {
+void tripleMergeWithReverseCenter(int* A, int q, int r, int s, int limit) {
   int* L = new int[q];
   int* R = new int[r - q];
   int* M = new int[s - r];
@@ -105,8 +104,8 @@ void tripleMergeWithReverseCenter(int* A, int q, int r, int s) {
   k = 0;
 
   for (l = 0; l <= s && i < maxI && j < maxJ && k < maxK; ++l) {
-    int li = 2147483647;
-    if (l > 475) {
+    int li = 2147483647;  // MAX_INT
+    if (l > limit) {
       li = L[i];
       ++ct_read;
     }
@@ -117,23 +116,20 @@ void tripleMergeWithReverseCenter(int* A, int q, int r, int s) {
     if (mk <= li && mk <= rj) {
       A[l] = mk;
       ++k;
-    }
-    else if (rj <= li && rj <= mk) {
+    } else if (rj <= li && rj <= mk) {
       A[l] = rj;
       ++j;
-    }
-    else {
+    } else {
       A[l] = li;
       ++i;
     }
   }
 
-
-  if (i >= maxI)        //L is empty
+  if (i >= maxI)  // L is empty
     partialMerge(A + l, R + j, M + k, maxJ - j, maxK - k);
-  else if (j >= maxJ)   //R is empty
+  else if (j >= maxJ)  // R is empty
     partialMerge(A + l, L + i, M + k, maxI - i, maxK - k);
-  else                  //M is empty
+  else  // M is empty
     partialMerge(A + l, L + i, R + j, maxI - i, maxJ - j);
 
   delete[] L;
@@ -141,58 +137,69 @@ void tripleMergeWithReverseCenter(int* A, int q, int r, int s) {
   delete[] M;
 }
 
-void shellSort(int A[], int n) {
-  // Start with a big gap, then reduce the gap
-  for (int gap = n / 2; gap > 0; gap /= 10) {  //?4
-    // Do a gapped insertion sort for this gap size.
-    // The first gap elements a[0..gap-1] are already in gapped order
-    // keep adding one more element until the entire array is
-    // gap sorted
-    for (int i = gap; i < n; i += 1) {
-      // add a[i] to the elements that have been gap sorted
-      // save a[i] in temp and make a hole at position i
-      int temp = A[i];
+void sinusoidSort(int* A, const int N) {
+  int n = 250;
+  int i, j, key;
+  for (i = 1; i < n; ++i) {
+    key = A[i];
+    ++ct_read;
+    j = i - 1;
+    while (j >= 0 && A[j] > key) {
       ++ct_read;
-
-      // shift earlier gap-sorted elements up until the correct
-      // location for a[i] is found
-      int j;
-      int tempWithGap = A[i - gap];  //?2
+      A[j + 1] = A[j];
       ++ct_read;
-      for (j = i; j >= gap && tempWithGap > temp; j -= gap) {  //?2
-        A[j] = tempWithGap;                                    //?2
-        if (j >= gap + gap) {                                  //?2
-          tempWithGap = A[j - gap - gap];                      //?2
-          ++ct_read;
-        }
-      }
-
-      //  put temp (the original a[i]) in its correct location
-      A[j] = temp;
+      j = j - 1;
     }
+    ++ct_read;
+    A[j + 1] = key;
+    ++ct_read;
   }
-}
 
-void reverseShellSort(int A[], int n) {
+  n = 500;
+  int* arr = A + 250;
   for (int gap = n / 2; gap > 0; gap /= 15) {  //?4
     for (int i = gap; i < n; i += 1) {
-      int temp = A[i];
+      int temp = arr[i];
       ++ct_read;
 
       int j;
-      int tempWithGap = A[i - gap];  //?3
+      int tempWithGap = arr[i - gap];  //?3
       ++ct_read;
       for (j = i; j >= gap && tempWithGap < temp; j -= gap) {  //?3
-        A[j] = tempWithGap;                                    //?3
+        arr[j] = tempWithGap;                                  //?3
         if (j >= gap + gap) {
-          tempWithGap = A[j - gap - gap];  //?3
+          tempWithGap = arr[j - gap - gap];  //?3
           ++ct_read;
         }
       }
 
-      A[j] = temp;
+      arr[j] = temp;
     }
   }
+
+  n = 250;
+  arr = A + 750;
+  for (int gap = n / 2; gap > 0; gap /= 10) {  //?4
+    for (int i = gap; i < n; i += 1) {
+      int temp = arr[i];
+      ++ct_read;
+
+      int j;
+      int tempWithGap = arr[i - gap];  //?2
+      ++ct_read;
+      for (j = i; j >= gap && tempWithGap > temp; j -= gap) {  //?2
+        arr[j] = tempWithGap;                                    //?2
+        if (j >= gap + gap) {                                  //?2
+          tempWithGap = arr[j - gap - gap];                      //?2
+          ++ct_read;
+        }
+      }
+
+      arr[j] = temp;
+    }
+  }
+
+  tripleMergeWithReverseCenter(A, 249, 749, 999, 475);
 }
 
 int parse_cmd(int argc, char** argv) {
@@ -269,11 +276,7 @@ int main(int argc, char** argv) {
     ct_read = 0;
 
     /// algoritmo di sorting
-    shellSort(A, 250);
-    reverseShellSort(A + 250, 500);
-    shellSort(A + 750, 250);
-
-    tripleMergeWithReverseCenter(A, 249, 749, 999);
+    sinusoidSort(A, n);
 
     if (details) {
       printf("Output:\n");
