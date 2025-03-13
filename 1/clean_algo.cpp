@@ -49,7 +49,8 @@ void merge(int* A, int p, int q, int r) {
     if (li <= rj) {
       A[k] = li;
       ++i;
-    } else {
+    }
+    else {
       A[k] = rj;
       ++j;
     }
@@ -91,7 +92,8 @@ void partialMerge(int* A, int* L, int* R, int ln, int rn) {
     if (li <= rj) {
       A[k] = li;
       ++i;
-    } else {
+    }
+    else {
       A[k] = rj;
       ++j;
     }
@@ -166,10 +168,12 @@ void tripleMergeWithReverseCenter(int* A, int q, int r, int s) {
     if (mk <= li && mk <= rj) {
       A[l] = mk;
       ++k;
-    } else if (rj <= li && rj <= mk) {
+    }
+    else if (rj <= li && rj <= mk) {
       A[l] = rj;
       ++j;
-    } else {
+    }
+    else {
       A[l] = li;
       ++i;
     }
@@ -333,10 +337,12 @@ void tripleMergeWithReverseCenter(int* A, int q, int r, int s, int limit) {
     if (mk <= li && mk <= rj) {
       A[l] = mk;
       ++k;
-    } else if (rj <= li && rj <= mk) {
+    }
+    else if (rj <= li && rj <= mk) {
       A[l] = rj;
       ++j;
-    } else {
+    }
+    else {
       A[l] = li;
       ++i;
     }
@@ -361,7 +367,7 @@ void sinusoidSort(int* A, const int firstStart, const int firstEnd, const int se
   while (index < n) {
     if (index == 0)
       index++;
-    
+
     int arrIndex = arr[index];
     ++read_count;
     int arrIndex1 = arr[index - 1];
@@ -421,6 +427,52 @@ void sinusoidSort(int* A, const int firstStart, const int firstEnd, const int se
   }
 
   tripleMergeWithReverseCenter(A, firstEnd - 1, firstEnd + secondN - 1, firstEnd + secondN + thirdN - 1, mergeLimit);
+}
+
+void newSinusoidSort(int*& A) {
+  const int n = 1000;
+  int* arr = new int[n];
+
+  for (int i = 0; i < n / 4;++i) {
+    arr[n / 2 + i * 2] = A[i];
+    ++read_count;
+  }
+  for (int i = 0; i < n / 4;++i) {
+    arr[n / 2 + i * 2 + 1] = A[n / 4 + i];
+    ++read_count;
+  }
+  for (int i = 0; i < n / 4;++i) {
+    arr[i * 2] = A[(n / 4) * 3 - i];
+    ++read_count;
+  }
+  for (int i = 0; i < n / 4;++i) {
+    arr[i * 2 + 1] = A[(n / 4) * 3 + i + 1];
+    ++read_count;
+  }
+  //1000
+
+  for (int gap = n / 2; gap > 0; gap /= 22) {
+    for (int i = gap; i < n; i += 1) {
+      int temp = arr[i];
+      ++read_count;
+
+      int j;
+      int tempWithGap = arr[i - gap];
+      ++read_count;
+      for (j = i; j >= gap && tempWithGap > temp; j -= gap) {
+        arr[j] = tempWithGap;
+        if (j >= gap + gap) {
+          tempWithGap = arr[j - gap - gap];
+          ++read_count;
+        }
+      }
+
+      arr[j] = temp;
+    }
+  }
+
+  delete[] A;
+  A = arr;
 }
 
 int main() {
@@ -489,7 +541,8 @@ int main() {
 
     // shellSort(A, 1000);
 
-    sinusoidSort(A, 142, 250, 500, 250, 475);
+    //sinusoidSort(A, 142, 250, 500, 250, 475);
+    newSinusoidSort(A);
 
     read_avg += read_count;
     if (read_min < 0 || read_min > read_count) read_min = read_count;
