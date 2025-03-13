@@ -49,8 +49,7 @@ void merge(int* A, int p, int q, int r) {
     if (li <= rj) {
       A[k] = li;
       ++i;
-    }
-    else {
+    } else {
       A[k] = rj;
       ++j;
     }
@@ -92,8 +91,7 @@ void partialMerge(int* A, int* L, int* R, int ln, int rn) {
     if (li <= rj) {
       A[k] = li;
       ++i;
-    }
-    else {
+    } else {
       A[k] = rj;
       ++j;
     }
@@ -168,12 +166,10 @@ void tripleMergeWithReverseCenter(int* A, int q, int r, int s) {
     if (mk <= li && mk <= rj) {
       A[l] = mk;
       ++k;
-    }
-    else if (rj <= li && rj <= mk) {
+    } else if (rj <= li && rj <= mk) {
       A[l] = rj;
       ++j;
-    }
-    else {
+    } else {
       A[l] = li;
       ++i;
     }
@@ -274,7 +270,7 @@ void insertionSort(int* A, int n) {
 }
 
 void reverseInsertionSort(int* A, int n) {
-  //insertion sort but with reversed loop
+  // insertion sort but with reversed loop
   int i, j, key;
   for (i = n - 2; i >= 0; i--) {
     key = A[i];
@@ -337,12 +333,10 @@ void tripleMergeWithReverseCenter(int* A, int q, int r, int s, int limit) {
     if (mk <= li && mk <= rj) {
       A[l] = mk;
       ++k;
-    }
-    else if (rj <= li && rj <= mk) {
+    } else if (rj <= li && rj <= mk) {
       A[l] = rj;
       ++j;
-    }
-    else {
+    } else {
       A[l] = li;
       ++i;
     }
@@ -361,25 +355,29 @@ void tripleMergeWithReverseCenter(int* A, int q, int r, int s, int limit) {
 }
 
 void sinusoidSort(int* A, const int firstStart, const int firstEnd, const int secondN, const int thirdN, const int mergeLimit) {
-  int n = firstEnd;
-  int i, j, key;
-  for (i = firstStart; i < n; ++i) {
-    key = A[i];
+  int n = firstEnd - firstStart;
+  int* arr = A + firstStart;
+  int index = 0;
+  while (index < n) {
+    if (index == 0)
+      index++;
+    
+    int arrIndex = arr[index];
     ++read_count;
-    j = i - 1;
-    while (j >= 0 && A[j] > key) {
-      ++read_count;
-      A[j + 1] = A[j];
-      ++read_count;
-      j = j - 1;
+    int arrIndex1 = arr[index - 1];
+    ++read_count;
+
+    if (arrIndex >= arrIndex1)
+      index++;
+    else {
+      arr[index] = arrIndex1;
+      arr[index - 1] = arrIndex;
+      index--;
     }
-    ++read_count;
-    A[j + 1] = key;
-    ++read_count;
   }
 
   n = secondN;
-  int* arr = A + firstEnd;
+  arr = A + firstEnd;
   for (int gap = n / 2; gap > 0; gap /= 15) {
     for (int i = gap; i < n; i += 1) {
       int temp = arr[i];
@@ -471,27 +469,27 @@ int main() {
     reverse_shell_read_count = 0;
     merge_read_count = 0;
 
-    //insertionSort(A, 250);
-    //std::cout << "Shell sort 1: " << read_count << " " << isOrdered(A, 250) << std::endl;
+    // insertionSort(A, 250);
+    // std::cout << "Shell sort 1: " << read_count << " " << isOrdered(A, 250) << std::endl;
 
-    //reverseShellSort(A + 250, 500);
-    //std::cout << "Reverse shell sort 2: " << read_count << " " << isOrdered(A + 250, 500) << std::endl;
+    // reverseShellSort(A + 250, 500);
+    // std::cout << "Reverse shell sort 2: " << read_count << " " << isOrdered(A + 250, 500) << std::endl;
 
     // merge(A, 0, 249, 749);
     // std::cout << "Merge 1+2: " << read_count << std::endl;
 
-    //shellSort(A + 750, 250);
-    //std::cout << "Shell sort 3: " << read_count << " " << isOrdered(A + 750, 250) << std::endl;
+    // shellSort(A + 750, 250);
+    // std::cout << "Shell sort 3: " << read_count << " " << isOrdered(A + 750, 250) << std::endl;
 
     // merge(A, 0, 749, 999);
     // std::cout << "Merge (1+2)+3: " << read_count << std::endl;
 
-    //tripleMergeWithReverseCenter(A, 249, 749, 999);
-    //std::cout << "Merge 1+2+3: " << read_count << " " << isOrdered(A, 1000) << std::endl;
+    // tripleMergeWithReverseCenter(A, 249, 749, 999);
+    // std::cout << "Merge 1+2+3: " << read_count << " " << isOrdered(A, 1000) << std::endl;
 
     // shellSort(A, 1000);
 
-    sinusoidSort(A, 140, 250, 500, 250, 475);
+    sinusoidSort(A, 142, 250, 500, 250, 475);
 
     read_avg += read_count;
     if (read_min < 0 || read_min > read_count) read_min = read_count;

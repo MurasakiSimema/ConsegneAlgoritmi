@@ -50,8 +50,7 @@ void partialMerge(int* A, int* L, int* R, int ln, int rn) {
     if (li <= rj) {
       A[k] = li;
       ++i;
-    }
-    else {
+    } else {
       A[k] = rj;
       ++j;
     }
@@ -117,12 +116,10 @@ void tripleMergeWithReverseCenter(int* A, int q, int r, int s, int limit) {
     if (mk <= li && mk <= rj) {
       A[l] = mk;
       ++k;
-    }
-    else if (rj <= li && rj <= mk) {
+    } else if (rj <= li && rj <= mk) {
       A[l] = rj;
       ++j;
-    }
-    else {
+    } else {
       A[l] = li;
       ++i;
     }
@@ -141,25 +138,29 @@ void tripleMergeWithReverseCenter(int* A, int q, int r, int s, int limit) {
 }
 
 void sinusoidSort(int* A, const int firstStart, const int firstEnd, const int secondN, const int thirdN, const int mergeLimit) {
-  int n = firstEnd;
-  int i, j, key;
-  for (i = firstStart; i < n; ++i) {
-    key = A[i];
+  int n = firstEnd - firstStart;
+  int* arr = A + firstStart;
+  int index = 0;
+  while (index < n) {
+    if (index == 0)
+      index++;
+
+    int arrIndex = arr[index];
     ++ct_read;
-    j = i - 1;
-    while (j >= 0 && A[j] > key) {
-      ++ct_read;
-      A[j + 1] = A[j];
-      ++ct_read;
-      j = j - 1;
+    int arrIndex1 = arr[index - 1];
+    ++ct_read;
+
+    if (arrIndex >= arrIndex1)
+      index++;
+    else {
+      arr[index] = arrIndex1;
+      arr[index - 1] = arrIndex;
+      index--;
     }
-    ++ct_read;
-    A[j + 1] = key;
-    ++ct_read;
   }
 
   n = secondN;
-  int* arr = A + firstEnd;
+  arr = A + firstEnd;
   for (int gap = n / 2; gap > 0; gap /= 15) {
     for (int i = gap; i < n; i += 1) {
       int temp = arr[i];
@@ -279,7 +280,7 @@ int main(int argc, char** argv) {
     ct_read = 0;
 
     /// algoritmo di sorting
-    sinusoidSort(A, 140, 250, 500, 250, 475);
+    sinusoidSort(A, 143, 250, 500, 250, 475);
 
     if (details) {
       printf("Output:\n");
@@ -296,8 +297,8 @@ int main(int argc, char** argv) {
   }
 
   printf("N test: %d, Min: %d, Med: %.1f, Max: %d\n",
-    ntests,
-    read_min, (0.0 + read_avg) / ntests, read_max);
+         ntests,
+         read_min, (0.0 + read_avg) / ntests, read_max);
 
   delete[] A;
 
