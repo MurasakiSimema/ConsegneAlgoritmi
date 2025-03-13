@@ -280,7 +280,7 @@ int main(int argc, char** argv) {
     ct_read = 0;
 
     /// algoritmo di sorting
-    sinusoidSort(A, 143, 250, 500, 250, 475);
+    sinusoidSort(A, 142, 250, 500, 250, 475);
 
     if (details) {
       printf("Output:\n");
