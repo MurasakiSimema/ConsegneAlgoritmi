@@ -50,7 +50,8 @@ void partialMerge(int* A, int* L, int* R, int ln, int rn) {
     if (li <= rj) {
       A[k] = li;
       ++i;
-    } else {
+    }
+    else {
       A[k] = rj;
       ++j;
     }
@@ -116,10 +117,12 @@ void tripleMergeWithReverseCenter(int* A, int q, int r, int s, int limit) {
     if (mk <= li && mk <= rj) {
       A[l] = mk;
       ++k;
-    } else if (rj <= li && rj <= mk) {
+    }
+    else if (rj <= li && rj <= mk) {
       A[l] = rj;
       ++j;
-    } else {
+    }
+    else {
       A[l] = li;
       ++i;
     }
@@ -140,22 +143,31 @@ void tripleMergeWithReverseCenter(int* A, int q, int r, int s, int limit) {
 void sinusoidSort(int* A, const int firstStart, const int firstEnd, const int secondN, const int thirdN, const int mergeLimit) {
   int n = firstEnd - firstStart;
   int* arr = A + firstStart;
-  int index = 0;
+  int index = 1;
+  int arrIndex = arr[1];
+  int arrIndex1 = arr[0];
+  ct_read += 2;
   while (index < n) {
-    if (index == 0)
+    if (arrIndex >= arrIndex1) {
       index++;
-
-    int arrIndex = arr[index];
-    ++ct_read;
-    int arrIndex1 = arr[index - 1];
-    ++ct_read;
-
-    if (arrIndex >= arrIndex1)
-      index++;
+      arrIndex1 = arrIndex;
+      arrIndex = arr[index];
+      ++ct_read;
+    }
     else {
       arr[index] = arrIndex1;
       arr[index - 1] = arrIndex;
       index--;
+      if (index == 0) {
+        ++index;
+        int tmp = arrIndex;
+        arrIndex = arrIndex1;
+        arrIndex1 = tmp;
+      }
+      else {
+        arrIndex1 = arr[index - 1];
+        ++ct_read;
+      }
     }
   }
 
@@ -297,8 +309,8 @@ int main(int argc, char** argv) {
   }
 
   printf("N test: %d, Min: %d, Med: %.1f, Max: %d\n",
-         ntests,
-         read_min, (0.0 + read_avg) / ntests, read_max);
+    ntests,
+    read_min, (0.0 + read_avg) / ntests, read_max);
 
   delete[] A;
 

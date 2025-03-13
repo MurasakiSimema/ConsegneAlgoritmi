@@ -108,22 +108,31 @@ void tripleMergeWithReverseCenter(int* A, int q, int r, int s, int limit) {
 void sinusoidSort(int* A, const int firstStart, const int firstEnd, const int secondN, const int thirdN, const int mergeLimit) {
   int n = firstEnd - firstStart;
   int* arr = A + firstStart;
-  int index = 0;
+  int index = 1;
+  int arrIndex = arr[1];
+  int arrIndex1 = arr[0];
+  read_count += 2;
   while (index < n) {
-    if (index == 0)
+    if (arrIndex >= arrIndex1) {
       index++;
-    
-    int arrIndex = arr[index];
-    ++read_count;
-    int arrIndex1 = arr[index - 1];
-    ++read_count;
-
-    if (arrIndex >= arrIndex1)
-      index++;
+      arrIndex1 = arrIndex;
+      arrIndex = arr[index];
+      ++read_count;
+    }
     else {
       arr[index] = arrIndex1;
       arr[index - 1] = arrIndex;
       index--;
+      if (index == 0) {
+        ++index;
+        int tmp = arrIndex;
+        arrIndex = arrIndex1;
+        arrIndex1 = tmp;
+      }
+      else {
+        arrIndex1 = arr[index - 1];
+        ++read_count;
+      }
     }
   }
 
