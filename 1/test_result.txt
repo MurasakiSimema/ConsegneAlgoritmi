@@ -78,3 +78,7 @@ Shell 750..999
 triple merge with reverse center 0..249+250..749+750...999
 
 Min: 9784, Med: 9974, Max: 10277
+
+After refactor with limits
+
+Min: 9367, Med: 9557, Max: 9860

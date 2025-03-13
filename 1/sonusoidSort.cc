@@ -15,7 +15,8 @@ void partialMerge(int* A, int* L, int* R, int ln, int rn) {
     if (li <= rj) {
       A[k] = li;
       ++i;
-    } else {
+    }
+    else {
       A[k] = rj;
       ++j;
     }
@@ -81,10 +82,12 @@ void tripleMergeWithReverseCenter(int* A, int q, int r, int s, int limit) {
     if (mk <= li && mk <= rj) {
       A[l] = mk;
       ++k;
-    } else if (rj <= li && rj <= mk) {
+    }
+    else if (rj <= li && rj <= mk) {
       A[l] = rj;
       ++j;
-    } else {
+    }
+    else {
       A[l] = li;
       ++i;
     }
@@ -102,10 +105,10 @@ void tripleMergeWithReverseCenter(int* A, int q, int r, int s, int limit) {
   delete[] M;
 }
 
-void sinusoidSort(int* A, const int N) {
-  int n = 250;
+void sinusoidSort(int* A, const int firstStart, const int firstEnd, const int secondN, const int thirdN, const int mergeLimit) {
+  int n = firstEnd;
   int i, j, key;
-  for (i = 1; i < n; ++i) {
+  for (i = firstStart; i < n; ++i) {
     key = A[i];
     ++read_count;
     j = i - 1;
@@ -120,20 +123,20 @@ void sinusoidSort(int* A, const int N) {
     ++read_count;
   }
 
-  n = 500;
-  int* arr = A + 250;
-  for (int gap = n / 2; gap > 0; gap /= 15) {  //?4
+  n = secondN;
+  int* arr = A + firstEnd;
+  for (int gap = n / 2; gap > 0; gap /= 15) {
     for (int i = gap; i < n; i += 1) {
       int temp = arr[i];
       ++read_count;
 
       int j;
-      int tempWithGap = arr[i - gap];  //?3
+      int tempWithGap = arr[i - gap];
       ++read_count;
-      for (j = i; j >= gap && tempWithGap < temp; j -= gap) {  //?3
-        arr[j] = tempWithGap;                                  //?3
+      for (j = i; j >= gap && tempWithGap < temp; j -= gap) {
+        arr[j] = tempWithGap;
         if (j >= gap + gap) {
-          tempWithGap = arr[j - gap - gap];  //?3
+          tempWithGap = arr[j - gap - gap];
           ++read_count;
         }
       }
@@ -142,20 +145,20 @@ void sinusoidSort(int* A, const int N) {
     }
   }
 
-  n = 250;
-  arr = A + 750;
-  for (int gap = n / 2; gap > 0; gap /= 10) {  //?4
+  n = thirdN;
+  arr = A + firstEnd + secondN;
+  for (int gap = n / 2; gap > 0; gap /= 10) {
     for (int i = gap; i < n; i += 1) {
       int temp = arr[i];
       ++read_count;
 
       int j;
-      int tempWithGap = arr[i - gap];  //?2
+      int tempWithGap = arr[i - gap];
       ++read_count;
-      for (j = i; j >= gap && tempWithGap > temp; j -= gap) {  //?2
-        arr[j] = tempWithGap;                                    //?2
-        if (j >= gap + gap) {                                  //?2
-          tempWithGap = arr[j - gap - gap];                      //?2
+      for (j = i; j >= gap && tempWithGap > temp; j -= gap) {
+        arr[j] = tempWithGap;
+        if (j >= gap + gap) {
+          tempWithGap = arr[j - gap - gap];
           ++read_count;
         }
       }
@@ -164,5 +167,5 @@ void sinusoidSort(int* A, const int N) {
     }
   }
 
-  tripleMergeWithReverseCenter(A, 249, 749, 999, 475);
+  tripleMergeWithReverseCenter(A, firstEnd - 1, firstEnd + secondN - 1, firstEnd + secondN + thirdN - 1, mergeLimit);
 }
