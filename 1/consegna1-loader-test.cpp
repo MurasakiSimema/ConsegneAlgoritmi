@@ -141,6 +141,7 @@ void tripleMergeWithReverseCenter(int* A, int q, int r, int s, int limit) {
 }
 
 void sinusoidSort(int* A, const int firstStart, const int firstEnd, const int secondN, const int thirdN, const int mergeLimit) {
+  //GNOME sort
   int n = firstEnd - firstStart;
   int* arr = A + firstStart;
   int index = 1;
@@ -171,6 +172,7 @@ void sinusoidSort(int* A, const int firstStart, const int firstEnd, const int se
     }
   }
 
+  //Reverse Shell sort
   n = secondN;
   arr = A + firstEnd;
   for (int gap = n / 2; gap > 0; gap /= 15) {
@@ -193,6 +195,7 @@ void sinusoidSort(int* A, const int firstStart, const int firstEnd, const int se
     }
   }
 
+  //Shell sort
   n = thirdN;
   arr = A + firstEnd + secondN;
   for (int gap = n / 2; gap > 0; gap /= 10) {
@@ -215,6 +218,7 @@ void sinusoidSort(int* A, const int firstStart, const int firstEnd, const int se
     }
   }
 
+  //Merge
   tripleMergeWithReverseCenter(A, firstEnd - 1, firstEnd + secondN - 1, firstEnd + secondN + thirdN - 1, mergeLimit);
 }
 
