@@ -8,6 +8,7 @@ int reverse_shell_read_count = 0;
 int merge_read_count = 0;
 int gnome_read_count = 0;
 int reverse_gnome_read_count = 0;
+int radix_read_count = 0;
 
 bool isOrdered(int* A, int n) {
   for (int i = 0; i < n - 1; ++i) {
@@ -349,6 +350,143 @@ void shellSort(int* arr, int n) {
   }
 }
 
+void countSort(int*& arr, int n, int exp, int offset = 0) {
+  int* output = new int[n];
+  int i;
+  int n0 = 0;
+  int n1 = 0;
+  int n2 = 0;
+  int n3 = 0;
+  int n4 = 0;
+  int n5 = 0;
+  int n6 = 0;
+  int n7 = 0;
+  int n8 = 0;
+  int n9 = 0;
+
+  for (i = 0; i < n; i++) {
+    int arrI = arr[i] - offset;
+    ++read_count;
+    ++radix_read_count;
+
+    switch ((arrI / exp) % 10) {
+    case 0:
+      n0++;
+      break;
+    case 1:
+      n1++;
+      break;
+    case 2:
+      n2++;
+      break;
+    case 3:
+      n3++;
+      break;
+    case 4:
+      n4++;
+      break;
+    case 5:
+      n5++;
+      break;
+    case 6:
+      n6++;
+      break;
+    case 7:
+      n7++;
+      break;
+    case 8:
+      n8++;
+      break;
+    case 9:
+      n9++;
+      break;
+    }
+  }
+
+  n1 += n0;
+  n2 += n1;
+  n3 += n2;
+  n4 += n3;
+  n5 += n4;
+  n6 += n5;
+  n7 += n6;
+  n8 += n7;
+  n9 += n8;
+
+  for (i = n - 1; i >= 0; i--) {
+    int arrI = arr[i] - offset;
+    ++read_count;
+    ++radix_read_count;
+
+    switch ((arrI / exp) % 10) {
+    case 0:
+      output[n0 - 1] = arrI + offset;
+      n0--;
+      break;
+    case 1:
+      output[n1 - 1] = arrI + offset;
+      n1--;
+      break;
+    case 2:
+      output[n2 - 1] = arrI + offset;
+      n2--;
+      break;
+    case 3:
+      output[n3 - 1] = arrI + offset;
+      n3--;
+      break;
+    case 4:
+      output[n4 - 1] = arrI + offset;
+      n4--;
+      break;
+    case 5:
+      output[n5 - 1] = arrI + offset;
+      n5--;
+      break;
+    case 6:
+      output[n6 - 1] = arrI + offset;
+      n6--;
+      break;
+    case 7:
+      output[n7 - 1] = arrI + offset;
+      n7--;
+      break;
+    case 8:
+      output[n8 - 1] = arrI + offset;
+      n8--;
+      break;
+    case 9:
+      output[n9 - 1] = arrI + offset;
+      n9--;
+      break;
+    }
+  }
+
+  delete[] arr;
+  arr = output;
+}
+
+// The main function to that sorts arr[]
+// of size n using Radix Sort
+void radixSort(int* arr, const int n) {
+  int* output = new int[n];
+  for (int i = 0; i < n; ++i) {
+    output[i] = arr[i];
+    ++read_count;
+    ++radix_read_count;
+  }
+
+  for (int exp = 1; 1000 / exp > 0; exp *= 10) {
+    countSort(output, n, exp, 0);
+  }
+
+  for (int i = 0; i < n; ++i) {
+    arr[i] = output[i];
+    ++read_count;
+    ++radix_read_count;
+  }
+}
+
 void sinusoidSort(int* A, const int firstStart, const int firstEnd, const int secondN, const int thirdN, const int mergeLimit) {
   int n = firstEnd - firstStart;
   int* arr = A + firstStart;
@@ -362,6 +500,7 @@ void sinusoidSort(int* A, const int firstStart, const int firstEnd, const int se
   n = thirdN;
   arr = A + firstEnd + secondN;
   shellSort(arr, n);
+  //radixSort(arr, n);
 
   tripleMergeWithReverseCenter(A, firstEnd - 1, firstEnd + secondN - 1, firstEnd + secondN + thirdN - 1, mergeLimit);
 }
@@ -450,6 +589,10 @@ int main() {
   int reverse_gnome_read_max = -1;
   long reverse_gnome_read_avg = 0;
 
+  int radix_read_min = -1;
+  int radix_read_max = -1;
+  long radix_read_avg = 0;
+
   bool areOrdered[100];
 
   for (test = 0; test < 100; test++) {
@@ -466,6 +609,7 @@ int main() {
     reverse_gnome_read_count = 0;
     shell_read_count = 0;
     reverse_shell_read_count = 0;
+    radix_read_count = 0;
     merge_read_count = 0;
 
     // insertionSort(A, 250);
@@ -488,7 +632,7 @@ int main() {
 
     // shellSort(A, 1000);
 
-    sinusoidSort(A, 142, 250, 500, 250, 475);
+    sinusoidSort(A, 142, 252, 498, 250, 475);
     //newSinusoidSort(A);
 
     read_avg += read_count;
@@ -513,6 +657,12 @@ int main() {
     if (reverse_shell_read_max < 0 || reverse_shell_read_max < reverse_shell_read_count)
       reverse_shell_read_max = reverse_shell_read_count;
 
+    radix_read_avg += radix_read_count;
+    if (radix_read_min < 0 || radix_read_min > radix_read_count)
+      radix_read_min = radix_read_count;
+    if (radix_read_max < 0 || radix_read_max < radix_read_count)
+      radix_read_max = radix_read_count;
+
     shell_read_avg += shell_read_count;
     if (shell_read_min < 0 || shell_read_min > shell_read_count)
       shell_read_min = shell_read_count;
@@ -533,6 +683,7 @@ int main() {
   gnome_read_avg /= 100;
   reverse_gnome_read_avg /= 100;
   reverse_shell_read_avg /= 100;
+  radix_read_avg /= 100;
   shell_read_avg /= 100;
   merge_read_avg /= 100;
 
@@ -557,6 +708,10 @@ int main() {
   //std::cout << std::endl;
   //std::cout << "Reverse shell sort read count" << std::endl;
   //std::cout << "Min: " << reverse_shell_read_min << ", Med: " << reverse_shell_read_avg << ", Max: " << reverse_shell_read_max << std::endl;
+
+  //std::cout << std::endl;
+  //std::cout << "Radix sort read count" << std::endl;
+  //std::cout << "Min: " << radix_read_min << ", Med: " << radix_read_avg << ", Max: " << radix_read_max << std::endl;
 
   std::cout << std::endl;
   std::cout << "Shell sort read count" << std::endl;

@@ -1,4 +1,5 @@
 int read_count = 0;
+int ct_read = 0;
 
 void partialMerge(int* A, int* L, int* R, int ln, int rn) {
   int i = 0;
@@ -10,7 +11,7 @@ void partialMerge(int* A, int* L, int* R, int ln, int rn) {
   for (k = 0; k <= n && i < ln && j < rn; ++k) {
     int li = L[i];
     int rj = R[j];
-    read_count += 2;
+    ct_read += 2;
 
     if (li <= rj) {
       A[k] = li;
@@ -24,14 +25,14 @@ void partialMerge(int* A, int* L, int* R, int ln, int rn) {
 
   while (i < ln) {
     A[k] = L[i];
-    ++read_count;
+    ++ct_read;
     ++i;
     ++k;
   }
 
   while (j < rn) {
     A[k] = R[j];
-    ++read_count;
+    ++ct_read;
     ++j;
     ++k;
   }
@@ -49,19 +50,19 @@ void tripleMergeWithReverseCenter(int* A, int q, int r, int s, int limit) {
 
   for (i = 0; i < q + 1; ++i) {
     L[i] = A[i];
-    ++read_count;
+    ++ct_read;
   }
   int maxI = i;
 
   for (i = 0; i < r - q; ++i) {
     R[i] = A[r - i];
-    ++read_count;
+    ++ct_read;
   }
   int maxJ = i;
 
   for (i = 0; i < s - r; ++i) {
     M[i] = A[r + 1 + i];
-    ++read_count;
+    ++ct_read;
   }
   int maxK = i;
 
@@ -73,11 +74,11 @@ void tripleMergeWithReverseCenter(int* A, int q, int r, int s, int limit) {
     int li = 2147483647;  // MAX_INT
     if (l > limit) {
       li = L[i];
-      ++read_count;
+      ++ct_read;
     }
     int rj = R[j];
     int mk = M[k];
-    read_count += 2;
+    ct_read += 2;
 
     if (mk <= li && mk <= rj) {
       A[l] = mk;
@@ -105,23 +106,21 @@ void tripleMergeWithReverseCenter(int* A, int q, int r, int s, int limit) {
   delete[] M;
 }
 
-void sinusoidSort(int* A, const int firstStart, const int firstEnd, const int secondN, const int thirdN, const int mergeLimit) {
-  int n = firstEnd - firstStart;
-  int* arr = A + firstStart;
+void gnomeSort(int* A, int n) {
   int index = 1;
-  int arrIndex = arr[1];
-  int arrIndex1 = arr[0];
-  read_count += 2;
+  int arrIndex = A[1];
+  int arrIndex1 = A[0];
+  ct_read += 2;
   while (index < n) {
     if (arrIndex >= arrIndex1) {
-      index++;
+      ++index;
       arrIndex1 = arrIndex;
-      arrIndex = arr[index];
-      ++read_count;
+      arrIndex = A[index];
+      ++ct_read;
     }
     else {
-      arr[index] = arrIndex1;
-      arr[index - 1] = arrIndex;
+      A[index] = arrIndex1;
+      A[index - 1] = arrIndex;
       index--;
       if (index == 0) {
         ++index;
@@ -130,55 +129,73 @@ void sinusoidSort(int* A, const int firstStart, const int firstEnd, const int se
         arrIndex1 = tmp;
       }
       else {
-        arrIndex1 = arr[index - 1];
-        ++read_count;
+        arrIndex1 = A[index - 1];
+        ++ct_read;
       }
     }
   }
+}
 
-  n = secondN;
-  arr = A + firstEnd;
+void reverseShellSort(int* arr, int n) {
   for (int gap = n / 2; gap > 0; gap /= 15) {
     for (int i = gap; i < n; i += 1) {
       int temp = arr[i];
-      ++read_count;
+      ++ct_read;
 
       int j;
       int tempWithGap = arr[i - gap];
-      ++read_count;
+      ++ct_read;
       for (j = i; j >= gap && tempWithGap < temp; j -= gap) {
         arr[j] = tempWithGap;
         if (j >= gap + gap) {
           tempWithGap = arr[j - gap - gap];
-          ++read_count;
+          ++ct_read;
         }
       }
 
       arr[j] = temp;
     }
   }
+}
 
-  n = thirdN;
-  arr = A + firstEnd + secondN;
+void shellSort(int* arr, int n) {
   for (int gap = n / 2; gap > 0; gap /= 10) {
     for (int i = gap; i < n; i += 1) {
       int temp = arr[i];
-      ++read_count;
+      ++ct_read;
 
       int j;
       int tempWithGap = arr[i - gap];
-      ++read_count;
+      ++ct_read;
       for (j = i; j >= gap && tempWithGap > temp; j -= gap) {
         arr[j] = tempWithGap;
         if (j >= gap + gap) {
           tempWithGap = arr[j - gap - gap];
-          ++read_count;
+          ++ct_read;
         }
       }
 
       arr[j] = temp;
     }
   }
+}
 
+void sinusoidSort(int* A, const int firstStart, const int firstEnd, const int secondN, const int thirdN, const int mergeLimit) {
+  //GNOME sort
+  int n = firstEnd - firstStart;
+  int* arr = A + firstStart;
+  gnomeSort(arr, n);
+
+  //Reverse Shell sort
+  n = secondN;
+  arr = A + firstEnd;
+  reverseShellSort(arr, n);
+
+  //Shell sort
+  n = thirdN;
+  arr = A + firstEnd + secondN;
+  shellSort(arr, n);
+
+  //Merge
   tripleMergeWithReverseCenter(A, firstEnd - 1, firstEnd + secondN - 1, firstEnd + secondN + thirdN - 1, mergeLimit);
 }
