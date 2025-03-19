@@ -92,6 +92,35 @@ triple merge with reverse center 0..249+250..749+750...999
 
 Min: 9454, Med: 9622, Max: 9938
 
-After optimization (GNOME sort reading opt)
+After optimization (GNOME sort reading)
 
 Min: 9146, Med: 9336, Max: 9639
+
+------------------------------------------
+
+Gnome 0..249
+Reverse gnome 250..749
+Shell 750..999
+triple merge with reverse center 0..249+250..749+750...999
+
+Min: 8773, Med: 9107, Max: 9509
+
+------------------------------------------
+
+Gnome 0..249
+Reverse gnome 250..749
+Radix 750..999
+triple merge with reverse center 0..249+250..749+750...999
+
+Min: 8911, Med: 9264, Max: 9622
+
+------------------------------------------
+
+Gnome 0..251
+Reverse gnome 252..749
+Shell 750..999
+triple merge with reverse center 0..251+252..749+750...999
+
+Min: 8773, Med: 9103, Max: 9495
+
+------------------------------------------
