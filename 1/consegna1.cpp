@@ -1,193 +1,361 @@
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+
 #include <fstream>
 #include <iostream>
-#include <string>
+using namespace std;
 
-int read_count = 0;
+// compilazione: g++ consegna1-loader.c
+//
 
-bool isOrdered(int* A, int n) {
-  for (int i = 0; i < n - 1; ++i) {
-    if (A[i] > A[i + 1]) return false;
+// Il programma carica il file data.txt contenente 100 righe con dati da ordinare in modo crescente
+// ./a.out
+// In output viene mostrato il numero di accessi in read alla memoria per eseguire il sorting di ciascuna riga
+
+// Obiettivo:
+// Creare un algoritmo di sorting che minimizzi la somma del numero di accessi per ogni sorting di ciascuna riga del file
+
+int ct_read = 0;
+
+int max_dim = 0;
+int ntests = 100;
+int ndiv = 1;
+int details = 0;
+int graph = 0;
+
+int n = 0;  /// dimensione dell'array
+
+void print_array(int* A, int dim) {
+  for (int j = 0; j < dim; j++) {
+    printf("%d ", A[j]);
   }
-
-  return true;
+  printf("\n");
 }
 
-void merge(int* A, int p, int q, int r) {
-  int* L = new int[r - p + 1];
-  int* R = new int[r - p + 1];
-
+void partialMerge(int* A, int* L, int* R, int ln, int rn) {
   int i = 0;
   int j = 0;
   int k = 0;
 
-  for (i = 0; i < q - p + 1; ++i) {
-    L[i] = A[p + i];
-    ++read_count;
-  }
-  int maxI = i;
+  int n = ln + rn;
 
-  for (i = 0; i < r - q; ++i) {
-    R[i] = A[q + 1 + i];
-    ++read_count;
-  }
-  int maxJ = i;
-
-  i = 0;
-  j = 0;
-
-  for (k = p; k <= r && i < maxI && j < maxJ; ++k) {
+  for (k = 0; k <= n && i < ln && j < rn; ++k) {
     int li = L[i];
     int rj = R[j];
-    read_count += 2;
+    ct_read += 2;
 
     if (li <= rj) {
       A[k] = li;
       ++i;
-    } else {
+    }
+    else {
       A[k] = rj;
       ++j;
     }
   }
 
-  while (i < maxI) {
+  while (i < ln) {
     A[k] = L[i];
-    ++read_count;
+    ++ct_read;
     ++i;
     ++k;
   }
 
-  while (j < maxJ) {
+  while (j < rn) {
     A[k] = R[j];
-    ++read_count;
+    ++ct_read;
     ++j;
     ++k;
   }
+}
+
+void tripleMergeWithReverseCenter(int* A, int q, int r, int s, int limit) {
+  int* L = new int[q];
+  int* R = new int[r - q];
+  int* M = new int[s - r];
+
+  int i = 0;
+  int j = 0;
+  int k = 0;
+  int l = 0;
+
+  for (i = 0; i < q + 1; ++i) {
+    L[i] = A[i];
+    ++ct_read;
+  }
+  int maxI = i;
+
+  for (i = 0; i < r - q; ++i) {
+    R[i] = A[r - i];
+    ++ct_read;
+  }
+  int maxJ = i;
+
+  for (i = 0; i < s - r; ++i) {
+    M[i] = A[r + 1 + i];
+    ++ct_read;
+  }
+  int maxK = i;
+
+  i = 0;
+  j = 0;
+  k = 0;
+
+  for (l = 0; l <= s && i < maxI && j < maxJ && k < maxK; ++l) {
+    int li = 2147483647;  // MAX_INT
+    if (l > limit) {
+      li = L[i];
+      ++ct_read;
+    }
+    int rj = R[j];
+    int mk = M[k];
+    ct_read += 2;
+
+    if (mk <= li && mk <= rj) {
+      A[l] = mk;
+      ++k;
+    }
+    else if (rj <= li && rj <= mk) {
+      A[l] = rj;
+      ++j;
+    }
+    else {
+      A[l] = li;
+      ++i;
+    }
+  }
+
+  if (i >= maxI)  // L is empty
+    partialMerge(A + l, R + j, M + k, maxJ - j, maxK - k);
+  else if (j >= maxJ)  // R is empty
+    partialMerge(A + l, L + i, M + k, maxI - i, maxK - k);
+  else  // M is empty
+    partialMerge(A + l, L + i, R + j, maxI - i, maxJ - j);
 
   delete[] L;
   delete[] R;
+  delete[] M;
 }
 
-void shellSort(int A[], int n) {
-  // Start with a big gap, then reduce the gap
-  for (int gap = n / 2; gap > 0; gap /= 10) {  //?4
-    // Do a gapped insertion sort for this gap size.
-    // The first gap elements a[0..gap-1] are already in gapped order
-    // keep adding one more element until the entire array is
-    // gap sorted
-    for (int i = gap; i < n; i += 1) {
-      // add a[i] to the elements that have been gap sorted
-      // save a[i] in temp and make a hole at position i
-      int temp = A[i];
-      ++read_count;
-
-      // shift earlier gap-sorted elements up until the correct
-      // location for a[i] is found
-      int j;
-      int tempWithGap = A[i - gap];  //?2
-      ++read_count;
-      for (j = i; j >= gap && tempWithGap > temp; j -= gap) {  //?2
-        A[j] = tempWithGap;                                    //?2
-        if (j >= gap + gap) {                                  //?2
-          tempWithGap = A[j - gap - gap];                      //?2
-          ++read_count;
-        }
+void gnomeSort(int* A, int n) {
+  int index = 1;
+  int arrIndex = A[1];
+  int arrIndex1 = A[0];
+  ct_read += 2;
+  while (index < n) {
+    if (arrIndex >= arrIndex1) {
+      ++index;
+      arrIndex1 = arrIndex;
+      arrIndex = A[index];
+      ++ct_read;
+    }
+    else {
+      A[index] = arrIndex1;
+      A[index - 1] = arrIndex;
+      index--;
+      if (index == 0) {
+        ++index;
+        int tmp = arrIndex;
+        arrIndex = arrIndex1;
+        arrIndex1 = tmp;
       }
-
-      //  put temp (the original a[i]) in its correct location
-      A[j] = temp;
+      else {
+        arrIndex1 = A[index - 1];
+        ++ct_read;
+      }
     }
   }
-  
 }
 
-void reverseShellSort(int A[], int n) {
-  for (int gap = n / 2; gap > 0; gap /= 15) {  //?4
+void reverseGnomeSort(int* A, int n) {
+  int index = n - 2;
+  int arrIndex = A[n - 2];
+  int arrIndex1 = A[n - 1];
+  ct_read += 2;
+  while (index >= 0) {
+    if (arrIndex >= arrIndex1) {
+      --index;
+      arrIndex1 = arrIndex;
+      arrIndex = A[index];
+      ++ct_read;
+    }
+    else {
+      A[index] = arrIndex1;
+      A[index + 1] = arrIndex;
+      index++;
+      if (index == n - 1) {
+        --index;
+        int tmp = arrIndex;
+        arrIndex = arrIndex1;
+        arrIndex1 = tmp;
+      }
+      else {
+        arrIndex1 = A[index + 1];
+        ++ct_read;
+      }
+    }
+  }
+}
+
+void reverseShellSort(int* arr, int n) {
+  for (int gap = n / 2; gap > 0; gap /= 15) {
     for (int i = gap; i < n; i += 1) {
-      int temp = A[i];
-      ++read_count;
+      int temp = arr[i];
+      ++ct_read;
 
       int j;
-      int tempWithGap = A[i - gap];  //?3
-      ++read_count;
-      for (j = i; j >= gap && tempWithGap < temp; j -= gap) {  //?3
-        A[j] = tempWithGap;                                    //?3
+      int tempWithGap = arr[i - gap];
+      ++ct_read;
+      for (j = i; j >= gap && tempWithGap < temp; j -= gap) {
+        arr[j] = tempWithGap;
         if (j >= gap + gap) {
-          tempWithGap = A[j - gap - gap];  //?3
-          ++read_count;
+          tempWithGap = arr[j - gap - gap];
+          ++ct_read;
         }
       }
 
-      A[j] = temp;
+      arr[j] = temp;
+    }
+  }
+}
+
+void shellSort(int* arr, int n) {
+  for (int gap = n / 2; gap > 0; gap /= 10) {
+    for (int i = gap; i < n; i += 1) {
+      int temp = arr[i];
+      ++ct_read;
+
+      int j;
+      int tempWithGap = arr[i - gap];
+      ++ct_read;
+      for (j = i; j >= gap && tempWithGap > temp; j -= gap) {
+        arr[j] = tempWithGap;
+        if (j >= gap + gap) {
+          tempWithGap = arr[j - gap - gap];
+          ++ct_read;
+        }
+      }
+
+      arr[j] = temp;
+    }
+  }
+}
+
+void sinusoidSort(int* A, const int firstStart, const int firstEnd, const int secondN, const int thirdN, const int mergeLimit) {
+  int n = firstEnd - firstStart;
+  int* arr = A + firstStart;
+  gnomeSort(arr, n);
+
+  n = secondN;
+  arr = A + firstEnd;
+  //reverseShellSort(arr, n);
+  reverseGnomeSort(arr, n);
+
+  n = thirdN;
+  arr = A + firstEnd + secondN;
+  shellSort(arr, n);
+
+  tripleMergeWithReverseCenter(A, firstEnd - 1, firstEnd + secondN - 1, firstEnd + secondN + thirdN - 1, mergeLimit);
+}
+
+int parse_cmd(int argc, char** argv) {
+  /// parsing argomento
+  max_dim = 1000;
+
+  for (int i = 1; i < argc; i++) {
+    if (argv[i][1] == 'd')
+      ndiv = atoi(argv[i] + 3);
+    if (argv[i][1] == 't')
+      ntests = atoi(argv[i] + 3);
+    if (argv[i][1] == 'v')
+      details = 1;
+    if (argv[i][1] == 'g') {
+      graph = 1;
+      ndiv = 1;
+      ntests = 1;
     }
   }
 
-  for (int i = 0; i < n / 2; ++i) {
-    int tmp = A[i];
-    ++read_count;
-    A[i] = A[n - i - 1];
-    ++read_count;
-    A[n - i - 1] = tmp;
-  }
-
-  
+  return 0;
 }
 
-int main() {
+int main(int argc, char** argv) {
   int i, test;
   int* A;
-  int* B;
-  int max_dim = 1000;
-  const int testSize = 100;
+  int* B;  /// buffer per visualizzazione algoritmo
 
+  if (parse_cmd(argc, argv))
+    return 1;
+
+  /// allocazione array
   A = new int[max_dim];
-  B = new int[max_dim];
 
-  int n = max_dim;
+  n = max_dim;
 
-  std::ifstream input_data;
+  // srand((unsigned)time(NULL));
+  // //creazione file input: NON USARE PIU' --> il file data.txt ufficiale è stato allegato, per permettere confronti equivalenti
+  //  FILE *f = fopen("data.txt", "w+");
+  //  int size=100;
+  //  for (int j = 0; j < size; j++) {
+  //      for (int i = 0; i < n; i++) {
+  //          int v = 0;
+  //         //  v=(int)(100000*exp(-(0.0+i-n/2)*(0.0+i-n/2)/n/n*64));
+  //          v=(int)(5000*(1+sin(3.1415*(i/(n/2.0)))));
+  //          v+=rand()%(1+(int)(n*pow(((i+0.0)/n),2)));
+  //          fprintf(f, "%d,", v);
+  //      }
+  //      fprintf(f, "\n");
+  //  }
+  //  fclose(f);
+
+  ifstream input_data;
   input_data.open("data.txt");
 
   int read_min = -1;
   int read_max = -1;
   long read_avg = 0;
 
-  bool areOrdered[testSize];
-  for (test = 0; test < testSize; test++) {
+  //// lancio ntests volte per coprire diversi casi di input random
+  for (test = 0; test < ntests; test++) {
     /// inizializzazione array: numeri random con range dimensione array
     for (i = 0; i < n; i++) {
       char comma;
       input_data >> A[i];
       input_data >> comma;
-      B[i] = A[i];
     }
 
-    read_count = 0;
-    shellSort(A, 250);
-    reverseShellSort(A + 250, 500);
-    merge(A, 0, 249, 749);
+    if (details) {
+      printf("caricato array di dimensione %d\n", n);
+      print_array(A, n);
+    }
 
-    shellSort(A + 750, 250);
-    merge(A, 0, 749, 999);
+    ct_read = 0;
 
-    read_avg += read_count;
-    if (read_min < 0 || read_min > read_count)
-      read_min = read_count;
-    if (read_max < 0 || read_max < read_count)
-      read_max = read_count;
+    /// algoritmo di sorting
+    sinusoidSort(A, 142, 252, 498, 250, 475);
 
-    areOrdered[test] = isOrdered(A, 1000);
+    if (details) {
+      printf("Output:\n");
+      print_array(A, n);
+    }
+
+    /// statistiche
+    read_avg += ct_read;
+    if (read_min < 0 || read_min > ct_read)
+      read_min = ct_read;
+    if (read_max < 0 || read_max < ct_read)
+      read_max = ct_read;
+    printf("Test %d %d\n", test, ct_read);
   }
-  read_avg /= testSize;
 
-  for (int i = 0; i < testSize; ++i)
-    if (areOrdered[i] != true)
-      std::cout << "Test n" << i << " is not ordered" << std::endl;
-
-  std::cout << std::endl;
-  std::cout << "N test: " << testSize << std::endl;
-  std::cout << "With " << n << " element" << std::endl;
-  std::cout << "Min: " << read_min << ", Med: " << read_avg << ", Max: " << read_max << std::endl;
+  printf("N test: %d, Min: %d, Med: %.1f, Max: %d\n",
+    ntests,
+    read_min, (0.0 + read_avg) / ntests, read_max);
 
   delete[] A;
-  delete[] B;
+
+  return 0;
 }
