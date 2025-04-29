@@ -25,7 +25,7 @@ node_6_0
 node_6_0 -> node_7_0 [  color=gray ]
 node_7_0
 [ shape = oval; label = "Idx: 7, val: 21" ];
-node_7_0 -> node_4_0 [  color=gray ]
+node_7_0 -> node_6_0 [  color=gray ]
 node_8_0
 [ shape = oval; label = "Idx: 8, val: 24" ];
 node_8_0 -> node_9_0 [  color=gray ]
@@ -34,10 +34,11 @@ node_9_0
 node_9_0 -> node_10_0 [  color=gray ]
 node_10_0
 [ shape = oval; label = "Idx: 10, val: 30" ];
+node_10_0 -> node_9_0 [  color=gray ]
 node_10_0 -> node_11_0 [  color=gray ]
 node_11_0
 [ shape = oval; label = "Idx: 11, val: 33" ];
-node_11_0 -> node_11_0 [  color=gray ]
+node_11_0 -> node_8_0 [  color=gray ]
 node_0_1
 [ shape = oval; label = "Idx: 0, val: 0" ];
 node_0_1 -> node_1_1 [  color=gray ]
@@ -61,7 +62,7 @@ node_6_1
 node_6_1 -> node_7_1 [  color=gray ]
 node_7_1
 [ shape = oval; label = "Idx: 7, val: 21" ];
-node_7_1 -> node_4_1 [  color=gray ]
+node_7_1 -> node_6_1 [  color=gray ]
 node_8_1
 [ shape = oval; label = "Idx: 8, val: 24" ];
 node_8_1 -> node_9_1 [  color=gray ]
@@ -70,10 +71,11 @@ node_9_1
 node_9_1 -> node_10_1 [  color=gray ]
 node_10_1
 [ shape = oval; label = "Idx: 10, val: 30" ];
+node_10_1 -> node_9_1 [  color=gray ]
 node_10_1 -> node_11_1 [  color=gray ]
 node_11_1
 [ shape = oval; label = "Idx: 11, val: 33" ];
-node_11_1 -> node_11_1 [  color=gray ]
+node_11_1 -> node_8_1 [  color=gray ]
 node_0_2
 [ shape = oval; fillcolor = "#bbbbbb"; style=filled; label = "Idx: 0, val: 0" ];
 node_0_2 -> node_1_2 [  color=gray ]
@@ -97,7 +99,7 @@ node_6_2
 node_6_2 -> node_7_2 [  color=gray ]
 node_7_2
 [ shape = oval; label = "Idx: 7, val: 21" ];
-node_7_2 -> node_4_2 [  color=gray ]
+node_7_2 -> node_6_2 [  color=gray ]
 node_8_2
 [ shape = oval; label = "Idx: 8, val: 24" ];
 node_8_2 -> node_9_2 [  color=gray ]
@@ -106,10 +108,11 @@ node_9_2
 node_9_2 -> node_10_2 [  color=gray ]
 node_10_2
 [ shape = oval; label = "Idx: 10, val: 30" ];
+node_10_2 -> node_9_2 [  color=gray ]
 node_10_2 -> node_11_2 [  color=gray ]
 node_11_2
 [ shape = oval; label = "Idx: 11, val: 33" ];
-node_11_2 -> node_11_2 [  color=gray ]
+node_11_2 -> node_8_2 [  color=gray ]
 node_0_3
 [ shape = oval; fillcolor = "#bbbbbb"; style=filled; label = "Idx: 0, val: 0" ];
 node_0_3 -> node_1_3 [  color=gray ]
@@ -133,7 +136,7 @@ node_6_3
 node_6_3 -> node_7_3 [  color=gray ]
 node_7_3
 [ shape = oval; label = "Idx: 7, val: 21" ];
-node_7_3 -> node_4_3 [  color=gray ]
+node_7_3 -> node_6_3 [  color=gray ]
 node_8_3
 [ shape = oval; label = "Idx: 8, val: 24" ];
 node_8_3 -> node_9_3 [  color=gray ]
@@ -142,10 +145,11 @@ node_9_3
 node_9_3 -> node_10_3 [  color=gray ]
 node_10_3
 [ shape = oval; label = "Idx: 10, val: 30" ];
+node_10_3 -> node_9_3 [  color=gray ]
 node_10_3 -> node_11_3 [  color=gray ]
 node_11_3
 [ shape = oval; label = "Idx: 11, val: 33" ];
-node_11_3 -> node_11_3 [  color=gray ]
+node_11_3 -> node_8_3 [  color=gray ]
 node_0_4
 [ shape = oval; fillcolor = "#bbbbbb"; style=filled; label = "Idx: 0, val: 0" ];
 node_0_4 -> node_1_4 [  color=gray ]
@@ -169,7 +173,7 @@ node_6_4
 node_6_4 -> node_7_4 [  color=gray ]
 node_7_4
 [ shape = oval; label = "Idx: 7, val: 21" ];
-node_7_4 -> node_4_4 [  color=gray ]
+node_7_4 -> node_6_4 [  color=gray ]
 node_8_4
 [ shape = oval; label = "Idx: 8, val: 24" ];
 node_8_4 -> node_9_4 [  color=gray ]
@@ -178,10 +182,11 @@ node_9_4
 node_9_4 -> node_10_4 [  color=gray ]
 node_10_4
 [ shape = oval; label = "Idx: 10, val: 30" ];
+node_10_4 -> node_9_4 [  color=gray ]
 node_10_4 -> node_11_4 [  color=gray ]
 node_11_4
 [ shape = oval; label = "Idx: 11, val: 33" ];
-node_11_4 -> node_11_4 [  color=gray ]
+node_11_4 -> node_8_4 [  color=gray ]
 node_0_5
 [ shape = oval; fillcolor = "#bbbbbb"; style=filled; label = "Idx: 0, val: 0" ];
 node_0_5 -> node_1_5 [  color=gray ]
@@ -205,7 +210,7 @@ node_6_5
 node_6_5 -> node_7_5 [  color=gray ]
 node_7_5
 [ shape = oval; label = "Idx: 7, val: 21" ];
-node_7_5 -> node_4_5 [  color=gray ]
+node_7_5 -> node_6_5 [  color=gray ]
 node_8_5
 [ shape = oval; label = "Idx: 8, val: 24" ];
 node_8_5 -> node_9_5 [  color=gray ]
@@ -214,10 +219,11 @@ node_9_5
 node_9_5 -> node_10_5 [  color=gray ]
 node_10_5
 [ shape = oval; label = "Idx: 10, val: 30" ];
+node_10_5 -> node_9_5 [  color=gray ]
 node_10_5 -> node_11_5 [  color=gray ]
 node_11_5
 [ shape = oval; label = "Idx: 11, val: 33" ];
-node_11_5 -> node_11_5 [  color=gray ]
+node_11_5 -> node_8_5 [  color=gray ]
 node_0_6
 [ shape = oval; fillcolor = "#555555"; style=filled; label = "Idx: 0, val: 0" ];
 node_0_6 -> node_1_6 [  color=gray ]
@@ -241,7 +247,7 @@ node_6_6
 node_6_6 -> node_7_6 [  color=gray ]
 node_7_6
 [ shape = oval; label = "Idx: 7, val: 21" ];
-node_7_6 -> node_4_6 [  color=gray ]
+node_7_6 -> node_6_6 [  color=gray ]
 node_8_6
 [ shape = oval; label = "Idx: 8, val: 24" ];
 node_8_6 -> node_9_6 [  color=gray ]
@@ -250,10 +256,11 @@ node_9_6
 node_9_6 -> node_10_6 [  color=gray ]
 node_10_6
 [ shape = oval; label = "Idx: 10, val: 30" ];
+node_10_6 -> node_9_6 [  color=gray ]
 node_10_6 -> node_11_6 [  color=gray ]
 node_11_6
 [ shape = oval; label = "Idx: 11, val: 33" ];
-node_11_6 -> node_11_6 [  color=gray ]
+node_11_6 -> node_8_6 [  color=gray ]
 node_0_7
 [ shape = oval; fillcolor = "#555555"; style=filled; label = "Idx: 0, val: 0" ];
 node_0_7 -> node_1_7 [  color=gray ]
@@ -277,7 +284,7 @@ node_6_7
 node_6_7 -> node_7_7 [  color=gray ]
 node_7_7
 [ shape = oval; label = "Idx: 7, val: 21" ];
-node_7_7 -> node_4_7 [  color=gray ]
+node_7_7 -> node_6_7 [  color=gray ]
 node_8_7
 [ shape = oval; label = "Idx: 8, val: 24" ];
 node_8_7 -> node_9_7 [  color=gray ]
@@ -286,10 +293,11 @@ node_9_7
 node_9_7 -> node_10_7 [  color=gray ]
 node_10_7
 [ shape = oval; label = "Idx: 10, val: 30" ];
+node_10_7 -> node_9_7 [  color=gray ]
 node_10_7 -> node_11_7 [  color=gray ]
 node_11_7
 [ shape = oval; label = "Idx: 11, val: 33" ];
-node_11_7 -> node_11_7 [  color=gray ]
+node_11_7 -> node_8_7 [  color=gray ]
 node_0_8
 [ shape = oval; fillcolor = "#555555"; style=filled; label = "Idx: 0, val: 0" ];
 node_0_8 -> node_1_8 [  color=gray ]
@@ -313,7 +321,7 @@ node_6_8
 node_6_8 -> node_7_8 [  color=gray ]
 node_7_8
 [ shape = oval; label = "Idx: 7, val: 21" ];
-node_7_8 -> node_4_8 [  color=gray ]
+node_7_8 -> node_6_8 [  color=gray ]
 node_8_8
 [ shape = oval; label = "Idx: 8, val: 24" ];
 node_8_8 -> node_9_8 [  color=gray ]
@@ -322,10 +330,11 @@ node_9_8
 node_9_8 -> node_10_8 [  color=gray ]
 node_10_8
 [ shape = oval; label = "Idx: 10, val: 30" ];
+node_10_8 -> node_9_8 [  color=gray ]
 node_10_8 -> node_11_8 [  color=gray ]
 node_11_8
 [ shape = oval; label = "Idx: 11, val: 33" ];
-node_11_8 -> node_11_8 [  color=gray ]
+node_11_8 -> node_8_8 [  color=gray ]
 node_0_9
 [ shape = oval; fillcolor = "#555555"; style=filled; label = "Idx: 0, val: 0" ];
 node_0_9 -> node_1_9 [  color=gray ]
@@ -349,7 +358,7 @@ node_6_9
 node_6_9 -> node_7_9 [  color=gray ]
 node_7_9
 [ shape = oval; label = "Idx: 7, val: 21" ];
-node_7_9 -> node_4_9 [  color=gray ]
+node_7_9 -> node_6_9 [  color=gray ]
 node_8_9
 [ shape = oval; label = "Idx: 8, val: 24" ];
 node_8_9 -> node_9_9 [  color=gray ]
@@ -358,10 +367,11 @@ node_9_9
 node_9_9 -> node_10_9 [  color=gray ]
 node_10_9
 [ shape = oval; label = "Idx: 10, val: 30" ];
+node_10_9 -> node_9_9 [  color=gray ]
 node_10_9 -> node_11_9 [  color=gray ]
 node_11_9
 [ shape = oval; label = "Idx: 11, val: 33" ];
-node_11_9 -> node_11_9 [  color=gray ]
+node_11_9 -> node_8_9 [  color=gray ]
 node_0_10
 [ shape = oval; fillcolor = "#555555"; style=filled; label = "Idx: 0, val: 0" ];
 node_0_10 -> node_1_10 [  color=gray ]
@@ -385,7 +395,7 @@ node_6_10
 node_6_10 -> node_7_10 [  color=gray ]
 node_7_10
 [ shape = oval; label = "Idx: 7, val: 21" ];
-node_7_10 -> node_4_10 [  color=gray ]
+node_7_10 -> node_6_10 [  color=gray ]
 node_8_10
 [ shape = oval; label = "Idx: 8, val: 24" ];
 node_8_10 -> node_9_10 [  color=gray ]
@@ -394,10 +404,11 @@ node_9_10
 node_9_10 -> node_10_10 [  color=gray ]
 node_10_10
 [ shape = oval; label = "Idx: 10, val: 30" ];
+node_10_10 -> node_9_10 [  color=gray ]
 node_10_10 -> node_11_10 [  color=gray ]
 node_11_10
 [ shape = oval; label = "Idx: 11, val: 33" ];
-node_11_10 -> node_11_10 [  color=gray ]
+node_11_10 -> node_8_10 [  color=gray ]
 node_0_11
 [ shape = oval; fillcolor = "#555555"; style=filled; label = "Idx: 0, val: 0" ];
 node_0_11 -> node_1_11 [  color=gray ]
@@ -421,7 +432,7 @@ node_6_11
 node_6_11 -> node_7_11 [  color=gray ]
 node_7_11
 [ shape = oval; fillcolor = "#bbbbbb"; style=filled; label = "Idx: 7, val: 21" ];
-node_7_11 -> node_4_11 [  color=gray ]
+node_7_11 -> node_6_11 [  color=gray ]
 node_8_11
 [ shape = oval; label = "Idx: 8, val: 24" ];
 node_8_11 -> node_9_11 [  color=gray ]
@@ -430,10 +441,11 @@ node_9_11
 node_9_11 -> node_10_11 [  color=gray ]
 node_10_11
 [ shape = oval; label = "Idx: 10, val: 30" ];
+node_10_11 -> node_9_11 [  color=gray ]
 node_10_11 -> node_11_11 [  color=gray ]
 node_11_11
 [ shape = oval; label = "Idx: 11, val: 33" ];
-node_11_11 -> node_11_11 [  color=gray ]
+node_11_11 -> node_8_11 [  color=gray ]
 node_0_12
 [ shape = oval; fillcolor = "#555555"; style=filled; label = "Idx: 0, val: 0" ];
 node_0_12 -> node_1_12 [  color=gray ]
@@ -457,7 +469,7 @@ node_6_12
 node_6_12 -> node_7_12 [  color=gray ]
 node_7_12
 [ shape = oval; fillcolor = "#555555"; style=filled; label = "Idx: 7, val: 21" ];
-node_7_12 -> node_4_12 [  color=gray ]
+node_7_12 -> node_6_12 [  color=gray ]
 node_8_12
 [ shape = oval; label = "Idx: 8, val: 24" ];
 node_8_12 -> node_9_12 [  color=gray ]
@@ -466,10 +478,11 @@ node_9_12
 node_9_12 -> node_10_12 [  color=gray ]
 node_10_12
 [ shape = oval; label = "Idx: 10, val: 30" ];
+node_10_12 -> node_9_12 [  color=gray ]
 node_10_12 -> node_11_12 [  color=gray ]
 node_11_12
 [ shape = oval; label = "Idx: 11, val: 33" ];
-node_11_12 -> node_11_12 [  color=gray ]
+node_11_12 -> node_8_12 [  color=gray ]
 node_0_13
 [ shape = oval; fillcolor = "#555555"; style=filled; label = "Idx: 0, val: 0" ];
 node_0_13 -> node_1_13 [  color=gray ]
@@ -493,7 +506,7 @@ node_6_13
 node_6_13 -> node_7_13 [  color=gray ]
 node_7_13
 [ shape = oval; fillcolor = "#555555"; style=filled; label = "Idx: 7, val: 21" ];
-node_7_13 -> node_4_13 [  color=gray ]
+node_7_13 -> node_6_13 [  color=gray ]
 node_8_13
 [ shape = oval; label = "Idx: 8, val: 24" ];
 node_8_13 -> node_9_13 [  color=gray ]
@@ -502,10 +515,11 @@ node_9_13
 node_9_13 -> node_10_13 [  color=gray ]
 node_10_13
 [ shape = oval; label = "Idx: 10, val: 30" ];
+node_10_13 -> node_9_13 [  color=gray ]
 node_10_13 -> node_11_13 [  color=gray ]
 node_11_13
 [ shape = oval; label = "Idx: 11, val: 33" ];
-node_11_13 -> node_11_13 [  color=gray ]
+node_11_13 -> node_8_13 [  color=gray ]
 node_0_14
 [ shape = oval; fillcolor = "#555555"; style=filled; label = "Idx: 0, val: 0" ];
 node_0_14 -> node_1_14 [  color=gray ]
@@ -529,7 +543,7 @@ node_6_14
 node_6_14 -> node_7_14 [  color=gray ]
 node_7_14
 [ shape = oval; fillcolor = "#555555"; style=filled; label = "Idx: 7, val: 21" ];
-node_7_14 -> node_4_14 [  color=gray ]
+node_7_14 -> node_6_14 [  color=gray ]
 node_8_14
 [ shape = oval; fillcolor = "#bbbbbb"; style=filled; label = "Idx: 8, val: 24" ];
 node_8_14 -> node_9_14 [  color=gray ]
@@ -538,10 +552,11 @@ node_9_14
 node_9_14 -> node_10_14 [  color=gray ]
 node_10_14
 [ shape = oval; label = "Idx: 10, val: 30" ];
+node_10_14 -> node_9_14 [  color=gray ]
 node_10_14 -> node_11_14 [  color=gray ]
 node_11_14
 [ shape = oval; label = "Idx: 11, val: 33" ];
-node_11_14 -> node_11_14 [  color=gray ]
+node_11_14 -> node_8_14 [  color=gray ]
 node_0_15
 [ shape = oval; fillcolor = "#555555"; style=filled; label = "Idx: 0, val: 0" ];
 node_0_15 -> node_1_15 [  color=gray ]
@@ -565,7 +580,7 @@ node_6_15
 node_6_15 -> node_7_15 [  color=gray ]
 node_7_15
 [ shape = oval; fillcolor = "#555555"; style=filled; label = "Idx: 7, val: 21" ];
-node_7_15 -> node_4_15 [  color=gray ]
+node_7_15 -> node_6_15 [  color=gray ]
 node_8_15
 [ shape = oval; fillcolor = "#bbbbbb"; style=filled; label = "Idx: 8, val: 24" ];
 node_8_15 -> node_9_15 [  color=gray ]
@@ -574,10 +589,11 @@ node_9_15
 node_9_15 -> node_10_15 [  color=gray ]
 node_10_15
 [ shape = oval; label = "Idx: 10, val: 30" ];
+node_10_15 -> node_9_15 [  color=gray ]
 node_10_15 -> node_11_15 [  color=gray ]
 node_11_15
 [ shape = oval; label = "Idx: 11, val: 33" ];
-node_11_15 -> node_11_15 [  color=gray ]
+node_11_15 -> node_8_15 [  color=gray ]
 node_0_16
 [ shape = oval; fillcolor = "#555555"; style=filled; label = "Idx: 0, val: 0" ];
 node_0_16 -> node_1_16 [  color=gray ]
@@ -601,7 +617,7 @@ node_6_16
 node_6_16 -> node_7_16 [  color=gray ]
 node_7_16
 [ shape = oval; fillcolor = "#555555"; style=filled; label = "Idx: 7, val: 21" ];
-node_7_16 -> node_4_16 [  color=gray ]
+node_7_16 -> node_6_16 [  color=gray ]
 node_8_16
 [ shape = oval; fillcolor = "#bbbbbb"; style=filled; label = "Idx: 8, val: 24" ];
 node_8_16 -> node_9_16 [  color=gray ]
@@ -610,10 +626,11 @@ node_9_16
 node_9_16 -> node_10_16 [  color=gray ]
 node_10_16
 [ shape = oval; fillcolor = "#bbbbbb"; style=filled; label = "Idx: 10, val: 30" ];
+node_10_16 -> node_9_16 [  color=gray ]
 node_10_16 -> node_11_16 [  color=gray ]
 node_11_16
 [ shape = oval; label = "Idx: 11, val: 33" ];
-node_11_16 -> node_11_16 [  color=gray ]
+node_11_16 -> node_8_16 [  color=gray ]
 node_0_17
 [ shape = oval; fillcolor = "#555555"; style=filled; label = "Idx: 0, val: 0" ];
 node_0_17 -> node_1_17 [  color=gray ]
@@ -637,7 +654,7 @@ node_6_17
 node_6_17 -> node_7_17 [  color=gray ]
 node_7_17
 [ shape = oval; fillcolor = "#555555"; style=filled; label = "Idx: 7, val: 21" ];
-node_7_17 -> node_4_17 [  color=gray ]
+node_7_17 -> node_6_17 [  color=gray ]
 node_8_17
 [ shape = oval; fillcolor = "#bbbbbb"; style=filled; label = "Idx: 8, val: 24" ];
 node_8_17 -> node_9_17 [  color=gray ]
@@ -646,10 +663,11 @@ node_9_17
 node_9_17 -> node_10_17 [  color=gray ]
 node_10_17
 [ shape = oval; fillcolor = "#bbbbbb"; style=filled; label = "Idx: 10, val: 30" ];
+node_10_17 -> node_9_17 [  color=gray ]
 node_10_17 -> node_11_17 [  color=gray ]
 node_11_17
-[ shape = oval; fillcolor = "#bbbbbb"; style=filled; label = "Idx: 11, val: 33" ];
-node_11_17 -> node_11_17 [  color=gray ]
+[ shape = oval; label = "Idx: 11, val: 33" ];
+node_11_17 -> node_8_17 [  color=gray ]
 node_0_18
 [ shape = oval; fillcolor = "#555555"; style=filled; label = "Idx: 0, val: 0" ];
 node_0_18 -> node_1_18 [  color=gray ]
@@ -673,17 +691,55 @@ node_6_18
 node_6_18 -> node_7_18 [  color=gray ]
 node_7_18
 [ shape = oval; fillcolor = "#555555"; style=filled; label = "Idx: 7, val: 21" ];
-node_7_18 -> node_4_18 [  color=gray ]
+node_7_18 -> node_6_18 [  color=gray ]
 node_8_18
-[ shape = oval; fillcolor = "#555555"; style=filled; label = "Idx: 8, val: 24" ];
+[ shape = oval; fillcolor = "#bbbbbb"; style=filled; label = "Idx: 8, val: 24" ];
 node_8_18 -> node_9_18 [  color=gray ]
 node_9_18
-[ shape = oval; fillcolor = "#555555"; style=filled; label = "Idx: 9, val: 27" ];
+[ shape = oval; fillcolor = "#bbbbbb"; style=filled; label = "Idx: 9, val: 27" ];
 node_9_18 -> node_10_18 [  color=gray ]
 node_10_18
-[ shape = oval; fillcolor = "#555555"; style=filled; label = "Idx: 10, val: 30" ];
+[ shape = oval; fillcolor = "#bbbbbb"; style=filled; label = "Idx: 10, val: 30" ];
+node_10_18 -> node_9_18 [  color=gray ]
 node_10_18 -> node_11_18 [  color=gray ]
 node_11_18
+[ shape = oval; fillcolor = "#bbbbbb"; style=filled; label = "Idx: 11, val: 33" ];
+node_11_18 -> node_8_18 [  color=gray ]
+node_0_19
+[ shape = oval; fillcolor = "#555555"; style=filled; label = "Idx: 0, val: 0" ];
+node_0_19 -> node_1_19 [  color=gray ]
+node_1_19
+[ shape = oval; fillcolor = "#555555"; style=filled; label = "Idx: 1, val: 3" ];
+node_1_19 -> node_2_19 [  color=gray ]
+node_2_19
+[ shape = oval; fillcolor = "#555555"; style=filled; label = "Idx: 2, val: 6" ];
+node_2_19 -> node_3_19 [  color=gray ]
+node_3_19
+[ shape = oval; fillcolor = "#555555"; style=filled; label = "Idx: 3, val: 9" ];
+node_3_19 -> node_2_19 [  color=gray ]
+node_4_19
+[ shape = oval; fillcolor = "#555555"; style=filled; label = "Idx: 4, val: 12" ];
+node_4_19 -> node_5_19 [  color=gray ]
+node_5_19
+[ shape = oval; fillcolor = "#555555"; style=filled; label = "Idx: 5, val: 15" ];
+node_5_19 -> node_6_19 [  color=gray ]
+node_6_19
+[ shape = oval; fillcolor = "#555555"; style=filled; label = "Idx: 6, val: 18" ];
+node_6_19 -> node_7_19 [  color=gray ]
+node_7_19
+[ shape = oval; fillcolor = "#555555"; style=filled; label = "Idx: 7, val: 21" ];
+node_7_19 -> node_6_19 [  color=gray ]
+node_8_19
+[ shape = oval; fillcolor = "#555555"; style=filled; label = "Idx: 8, val: 24" ];
+node_8_19 -> node_9_19 [  color=gray ]
+node_9_19
+[ shape = oval; fillcolor = "#555555"; style=filled; label = "Idx: 9, val: 27" ];
+node_9_19 -> node_10_19 [  color=gray ]
+node_10_19
+[ shape = oval; fillcolor = "#555555"; style=filled; label = "Idx: 10, val: 30" ];
+node_10_19 -> node_9_19 [  color=gray ]
+node_10_19 -> node_11_19 [  color=gray ]
+node_11_19
 [ shape = oval; fillcolor = "#555555"; style=filled; label = "Idx: 11, val: 33" ];
-node_11_18 -> node_11_18 [  color=gray ]
+node_11_19 -> node_8_19 [  color=gray ]
 }

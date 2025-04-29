@@ -177,7 +177,9 @@ int find_cycle(int n, int depth = 0)
     int t = 0;
     node_t* elem = E[n]->head;
     while (elem != NULL) {
-        t += find_cycle(elem->val, depth + 1);
+        int temp = find_cycle(elem->val, depth + 1);
+        if (temp > t)
+            t = temp;
         elem = elem->next;
     }
 
@@ -282,13 +284,14 @@ int main(int argc, char** argv)
     list_insert_front(E[4], 5);
     list_insert_front(E[5], 6);
     list_insert_front(E[6], 7);
-    list_insert_front(E[7], 4);
+    list_insert_front(E[7], 6);
 
     // Creazione del terzo grafo sconnesso
     list_insert_front(E[8], 9);
     list_insert_front(E[9], 10);
     list_insert_front(E[10], 11);
-    list_insert_front(E[11], 11);
+    list_insert_front(E[10], 9);
+    list_insert_front(E[11], 8);
 
     graph_print();
 
