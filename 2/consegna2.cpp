@@ -63,8 +63,23 @@ namespace Tree {
     return isComplete(n->left) && isComplete(n->right);
   }
 
+  void depthWithFather(node* n, int d) {
+    if (n == nullptr)
+      return;
+    n->depth = d;
+
+    if (n->left != nullptr) {
+      n->left->father = n;
+      depthWithFather(n->left, d + 1);
+    }
+    if (n->right != nullptr) {
+      n->right->father = n;
+      depthWithFather(n->right, d + 1);
+    }
+  }
+
   node* lowestCommonAnchestor(node* root, node* p, node* q) {
-    depth(root, 0);
+    depthWithFather(root, 0);
     node* tmp1 = p;
     node* tmp2 = q;
     while (tmp1 != tmp2) {

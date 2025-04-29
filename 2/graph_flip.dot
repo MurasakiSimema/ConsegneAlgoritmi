@@ -1,0 +1,71 @@
+digraph g
+{ 
+node [shape=none]
+rankdir="TB"
+edge[tailclip=false,arrowtail=dot];
+node_0_1
+[label=<
+<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4" >
+<TR> <TD CELLPADDING="3" BORDER="0"  ALIGN="LEFT" bgcolor="#f0f0f0" PORT="id">0</TD> </TR><TR>
+<TD PORT="val" bgcolor="#a0FFa0">1_0_0</TD>
+ <TD PORT="L" > 192</TD>
+ <TD PORT="R" > 48</TD>
+</TR></TABLE>>];
+rank = same; node_0_1;node_192_1;
+node_0_1:L:c -> node_192_1:id ;
+node_0_1:R:c -> node_48_1:id ;
+node_192_1
+[label=<
+<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4" >
+<TR> <TD CELLPADDING="3" BORDER="0"  ALIGN="LEFT" bgcolor="#f0f0f0" PORT="id">192</TD> </TR><TR>
+<TD PORT="val" bgcolor="#a0FFa0">5_1_0</TD>
+ <TD PORT="L" > 288</TD>
+ <TD PORT="R" > 240</TD>
+</TR></TABLE>>];
+rank = same; node_192_1;node_288_1;
+node_192_1:L:c -> node_288_1:id ;
+node_192_1:R:c -> node_240_1:id ;
+node_288_1
+[label=<
+<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4" >
+<TR> <TD CELLPADDING="3" BORDER="0"  ALIGN="LEFT" bgcolor="#f0f0f0" PORT="id">288</TD> </TR><TR>
+<TD PORT="val" bgcolor="#a0FFa0">7_2_0</TD>
+ <TD PORT="L" bgcolor="#808080"> NULL</TD>
+ <TD PORT="R" bgcolor="#808080"> NULL</TD>
+</TR></TABLE>>];
+node_240_1
+[label=<
+<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4" >
+<TR> <TD CELLPADDING="3" BORDER="0"  ALIGN="LEFT" bgcolor="#f0f0f0" PORT="id">240</TD> </TR><TR>
+<TD PORT="val" bgcolor="#a0FFa0">6_2_0</TD>
+ <TD PORT="L" bgcolor="#808080"> NULL</TD>
+ <TD PORT="R" bgcolor="#808080"> NULL</TD>
+</TR></TABLE>>];
+node_48_1
+[label=<
+<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4" >
+<TR> <TD CELLPADDING="3" BORDER="0"  ALIGN="LEFT" bgcolor="#f0f0f0" PORT="id">48</TD> </TR><TR>
+<TD PORT="val" bgcolor="#a0FFa0">2_1_0</TD>
+ <TD PORT="L" > 144</TD>
+ <TD PORT="R" > 96</TD>
+</TR></TABLE>>];
+rank = same; node_48_1;node_144_1;
+node_48_1:L:c -> node_144_1:id ;
+node_48_1:R:c -> node_96_1:id ;
+node_144_1
+[label=<
+<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4" >
+<TR> <TD CELLPADDING="3" BORDER="0"  ALIGN="LEFT" bgcolor="#f0f0f0" PORT="id">144</TD> </TR><TR>
+<TD PORT="val" bgcolor="#a0FFa0">4_2_0</TD>
+ <TD PORT="L" bgcolor="#808080"> NULL</TD>
+ <TD PORT="R" bgcolor="#808080"> NULL</TD>
+</TR></TABLE>>];
+node_96_1
+[label=<
+<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4" >
+<TR> <TD CELLPADDING="3" BORDER="0"  ALIGN="LEFT" bgcolor="#f0f0f0" PORT="id">96</TD> </TR><TR>
+<TD PORT="val" bgcolor="#a0FFa0">3_2_0</TD>
+ <TD PORT="L" bgcolor="#808080"> NULL</TD>
+ <TD PORT="R" bgcolor="#808080"> NULL</TD>
+</TR></TABLE>>];
+}
