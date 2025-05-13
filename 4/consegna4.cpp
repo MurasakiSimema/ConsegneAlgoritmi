@@ -188,47 +188,6 @@ void list_insert_front(list_t* l, int elem, float w) {
     l->head = new_node;
 }
 
-void print_array(int* A, int dim) {
-    for (int j = 0; j < dim; j++) {
-        printf("%d ", A[j]);
-    }
-    printf("\n");
-}
-
-void print_array_graph(int* A, int n, string c, int a, int l, int m, int r) {
-    /// prepara il disegno dell'array A ed il suo contenuto (n celle)
-    /// a e' il codice del nodo e c la stringa
-    /// l,m,r i tre indici della bisezione
-
-    // return ;
-
-    output_graph << c << a << " [label=<" << endl;
-
-    /// tabella con contenuto array
-    output_graph << "<TABLE BORDER=\"0\" CELLBORDER=\"0\" CELLSPACING=\"0\" > " << endl;
-    /// indici
-    output_graph << "<TR  >";
-    for (int j = 0; j < n; j++) {
-        output_graph << "<TD ";
-        output_graph << ">" << j << "</TD>" << endl;
-    }
-    output_graph << "</TR>" << endl;
-    output_graph << "<TR>";
-    // contenuto
-    for (int j = 0; j < n; j++) {
-        output_graph << "<TD BORDER=\"1\"";
-        if (j == m)
-            output_graph << " bgcolor=\"#00a000\""; /// valore testato
-        else if (j >= l && j <= r)
-            output_graph << " bgcolor=\"#80ff80\""; /// range di competenza
-        output_graph << ">" << A[j] << "</TD>" << endl;
-    }
-    output_graph << "</TR>" << endl;
-    output_graph << "</TABLE> " << endl;
-
-    output_graph << ">];" << endl;
-}
-
 /// HEAP//
 const int MAX_SIZE = 256; /// allocazione statica
 float heap[MAX_SIZE];
@@ -394,14 +353,14 @@ void shortest_path(int n) {
     while (heap_size > 0) {
         auto best = heap_remove_min(); /// estraggo il nodo con distanza minima
         int best_idx = best.second;
-        printf("(1) Estraggo il nodo %d con distanza %f\n", best_idx, best.first);
+        if (details)
+            printf("(1) Estraggo il nodo %d con distanza %f\n", best_idx, best.first);
 
         /// estrai dalla coda
         int u = best_idx;
-        if(V_visitato[u] == 1)
+        if (V_visitato[u] == 1)
             continue;
-        
-        printf("Visito il nodo %d\n", u);
+
         V_visitato[u] = 1;
 
         /// esploro la lista di adiacenza
@@ -418,7 +377,8 @@ void shortest_path(int n) {
 
 
             heap_insert(V_dist[v], v); /// inserisco il nuovo nodo in coda
-            printf("(2) Inserisco in coda il nodo %d con peso %f\n", v, V_dist[v]);
+            if (details)
+                printf("(2) Inserisco in coda il nodo %d con peso %f\n", v, V_dist[v]);
 
             elem = elem->next;
         }
@@ -427,6 +387,39 @@ void shortest_path(int n) {
 
     graph_print();
 }
+
+bool bellman_ford(int n, list_t** ADJ = E, int local_n_nodi = n_nodi) {
+    V_prev[n] = n;
+    V_dist[n] = 0;
+    for (int i = 1; i <= local_n_nodi - 1; i++) {
+        for (int u = 0; u < local_n_nodi; u++) {
+            node_t* adj = ADJ[u]->head;
+            while (adj != nullptr) {
+                int v = adj->val;
+                if (V_dist[u] != INFTY && V_dist[u] + adj->w < V_dist[v]) {  // se la distanza dalla sorgente al nodo corrente + il peso dell'arco è minore della distanza dalla sorgente al nodo
+                    V_dist[v] = V_dist[u] + adj->w;                          // aggiorno la distanza dalla sorgente al nodo
+                    V_prev[v] = u;                                           // aggiorno il nodo precedente
+                }
+                adj = adj->next;
+            }
+        }
+    }
+
+    for (int i = 0; i < local_n_nodi; i++) {  // controllo se esiste un ciclo con peso negativo
+        node_t* adj = ADJ[i]->head;
+        while (adj != nullptr) {
+            int v = adj->val;
+            if (V_dist[i] != INFTY && V_dist[i] + adj->w < V_dist[v]) {  // se la distanza dalla sorgente al nodo corrente + il peso dell'arco è minore della distanza dalla sorgente al nodo
+                if (details)
+                    printf("Esiste un ciclo con peso negativo\n");
+                return false;
+            }
+            adj = adj->next;
+        }
+    }
+    return true;
+}
+
 
 int parse_cmd(int argc, char** argv) {
     /// controllo argomenti
@@ -478,13 +471,13 @@ int main(int argc, char** argv) {
 
     n_nodi = 10;
 
-    //// init nodi
+    // init nodi
     V = new int[n_nodi];
     V_visitato = new int[n_nodi];
     V_prev = new int[n_nodi];
     V_dist = new float[n_nodi];
 
-    //// init archi
+    // init archi
     E = new list_t * [n_nodi]; //(list_t**)malloc(n_nodi*sizeof(list_t*));
 
     // costruzione grafo
@@ -501,23 +494,6 @@ int main(int argc, char** argv) {
 
         int x = i % N;
         int y = i / N;
-
-        // for (int dx = -2; dx <= 2; dx += 1)
-        //     for (int dy = -2; dy <= 2; dy += 1)
-        //         if (abs(dx) + abs(dy) >= 1 &&
-        //             abs(dx) + abs(dy) <= 1
-        //             ) { // limito gli archi ai vicini con 1 variazione assoluta sulle coordinate
-
-        //             int nx = x + dx;
-        //             int ny = y + dy;
-
-        //             if (nx >= 0 && nx < N &&
-        //                 ny >= 0 && ny < N) { /// coordinate del nuovo nodo sono nel grafo
-
-        //                 int j = nx + N * ny; /// indice del nuovo nodo
-        //                 list_insert_front(E[i], j, 15 * sqrt(dx*dx + dy*dy));
-        //             }
-        //         }
     }
 
     int partenza = 0;
@@ -542,9 +518,44 @@ int main(int argc, char** argv) {
             list_print(E[i]);
         }
 
-    shortest_path(0);
-    // shortest_path(44);
+    shortest_path(partenza);
+    printf("Distanza minima dal nodo %d al nodo %d e' %f\n", partenza, arrivo, V_dist[arrivo]);
     graph_print();
+
+
+    if (bellman_ford(0)) {
+        printf("Bellman-Ford: distanza minima dal nodo %d al nodo %d e' %f\n", partenza, arrivo, V_dist[arrivo]);
+        printf("Bellman-Ford: percorso minimo dal nodo %d al nodo %d e' ", partenza, arrivo);
+        int i = arrivo;
+        while (i != partenza) {
+            printf("%d ", i);
+            i = V_prev[i];
+        }
+        printf("%d \n", partenza);
+    }
+    else
+        printf("Bellman-Ford: esiste un ciclo con peso negativo\n");
+
+    //generate graph with negative cycle
+    list_t** E2 = new list_t * [3];
+    for (int i = 0; i < 3; i++) {
+        E2[i] = list_new();
+        if (i < 2)
+            list_insert_front(E2[i], i + 1, -1);
+        else
+            list_insert_front(E2[i], 0, -1);
+    }
+    if (bellman_ford(0, E2, 3)) {
+        printf("Bellman-Ford: distanza minima dal nodo %d al nodo %d e' %f\n", 0, 2, V_dist[2]);
+        printf("Bellman-Ford: percorso minimo dal nodo %d al nodo %d e' ", 0, 2);
+        int i = 2;
+        while (i != 0) {
+            printf("%d ", i);
+            i = V_prev[i];
+        }
+    }
+    else
+        printf("Bellman-Ford: esiste un ciclo con peso negativo\n");
 
     if (graph) {
         /// preparo footer e chiudo file
