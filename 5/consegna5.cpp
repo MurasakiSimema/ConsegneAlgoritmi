@@ -187,10 +187,14 @@ void unionSet(int u, int v, int parent[], int rank[])
   u = findParent(parent, u);
   v = findParent(parent, v);
 
+  // Finding the last node in the tree with the given id
   node* node_u = findNode(u);
   node* node_v = findNode(v);
 
   if (node_u == nullptr && node_v == nullptr) {
+    // If both nodes are not found, create new nodes for both u and v
+    // and add them as children of the new node (u,v)
+
     tree[tree_count] = node(u, v);
     child* new_child = new child;
     new_child->value = nullptr;
@@ -209,6 +213,9 @@ void unionSet(int u, int v, int parent[], int rank[])
     tree_count++;
   }
   else if (node_u == nullptr) {
+    // If node_u is not found, create a new node for u
+    // and add it as a child of the new node (u,v) with node_v
+
     tree[tree_count] = node(u, v);
 
     child* new_child = new child;
@@ -227,6 +234,9 @@ void unionSet(int u, int v, int parent[], int rank[])
     tree_count++;
   }
   else if (node_v == nullptr) {
+    // If node_v is not found, create a new node for v
+    // and add it as a child of the new node (u,v) with node_u
+
     tree[tree_count] = node(u, v);
 
     child* new_child = new child;
@@ -245,6 +255,8 @@ void unionSet(int u, int v, int parent[], int rank[])
     tree_count++;
   }
   else {
+    // If both nodes are found, add both nodes as children of the new node (u,v)
+
     tree[tree_count] = node(u, v);
 
     child* new_child = new child;
