@@ -11,30 +11,15 @@
 #include <functional>
 #include <sstream>
 
+#define PRINT_LEVEL 5
+
 struct edge {
   int u, v, weight;
   edge(int _u, int _v, int w) : u(_u), v(_v), weight(w) {}
   edge() : u(-1), v(-1), weight(0) {}
 };
 
-struct child;
-
-struct node {
-  int u_id;
-  int v_id;
-  child* childs = nullptr;
-  node() : u_id(-1), v_id(-1) {}
-  node(int _uid, int _vid) : u_id(_uid), v_id(_vid) {}
-  //~node() {
-  //  // Destructor to deallocate the childs
-  //  child* current_child = childs;
-  //  while (current_child != nullptr) {
-  //    child* next_child = current_child->next;
-  //    delete current_child;
-  //    current_child = next_child;
-  //  }
-  //}
-};
+struct node;
 
 struct child {
   node* value;
@@ -43,11 +28,28 @@ struct child {
   int id = -1;
 };
 
+struct node {
+  int u_id;
+  int v_id;
+  child* childs = nullptr;
+  node() : u_id(-1), v_id(-1) {}
+  node(int _uid, int _vid) : u_id(_uid), v_id(_vid) {}
+  ~node() {
+    // Destructor to deallocate the childs
+    child* current_child = childs;
+    while (current_child != nullptr) {
+      child* next_child = current_child->next;
+      delete current_child;
+      current_child = next_child;
+    }
+  }
+};
 
 node* tree = nullptr;
 int tree_count = 0;
 
-void printDfs(node* current, std::ofstream& fout) {
+int print_dfs = 0;
+void printDfs(node* current, std::ofstream& fout, bool stop = false) {
   if (!current) return;
 
   std::stringstream label;
@@ -55,19 +57,32 @@ void printDfs(node* current, std::ofstream& fout) {
 
   fout << "    " << label.str() << " [style=filled, fillcolor=red];\n";
 
-  while(current->childs) {
+  if (stop) {
+    print_dfs--;
+    return;
+  }
+
+  while (current->childs) {
     node* child = current->childs->value;
     std::stringstream child_label;
-    if(!current->childs->is_leaf)
+    if (!current->childs->is_leaf) {
       child_label << "\"" << child->u_id << "-" << child->v_id << "\"" << " [color=red]";
-    else{
-      child_label << "\"" << current->childs->id << "\""<< " [color=green]";
-      fout << "    " << child_label.str() << " [style=filled, fillcolor=green];\n";
+      print_dfs++;
+    }
+    else {
+      child_label << "\"" << current->childs->id << "\"" << " [color=green]";
+      fout << "    " << child_label.str() << " [style=filled, fillcolor=green, shape=box];\n";
     }
     fout << "    " << label.str() << " -> " << child_label.str() << ";\n";
-    printDfs(child, fout);
+
+    if (print_dfs > PRINT_LEVEL)
+      printDfs(child, fout, true);
+    else
+      printDfs(child, fout);
     current->childs = current->childs->next;
   }
+
+  print_dfs--;
 }
 
 void print_dot_tree_to_file(node* root, const std::string& filename = "graph.dot") {
@@ -79,6 +94,7 @@ void print_dot_tree_to_file(node* root, const std::string& filename = "graph.dot
 
   fout << "digraph G {\n";
 
+  print_dfs = 0;
   printDfs(root, fout);
   fout << "}\n";
   fout.close();
@@ -105,7 +121,7 @@ int findParent(int parent[], int component)
 node* findNode(int id)
 {
   // Check if the node already exists
-  for (int i = tree_count -1 ; i >= 0; --i) {
+  for (int i = tree_count - 1; i >= 0; --i) {
     if (tree[i].u_id == id || tree[i].v_id == id) {
       return &tree[i];
     }
@@ -176,7 +192,7 @@ void unionSet(int u, int v, int parent[], int rank[])
     new_child->id = v;
     new_child->next = tree[tree_count].childs;
     tree[tree_count].childs = new_child;
-    
+
     tree_count++;
   }
   else {
@@ -244,14 +260,14 @@ std::pair<edge*, int> kruskalAlgo(int nNodes, edge edges[], int nEdges)
   edge* minTree = new edge[nNodes - 1];
   int minTreeIndex = 0;
   for (int i = 0; i < nEdges && minTreeIndex < nNodes; i++) {
-    int v1 = findParent(parent, edges[i].u);
-    int v2 = findParent(parent, edges[i].v);
+    int u_root = findParent(parent, edges[i].u);
+    int v_root = findParent(parent, edges[i].v);
 
     // If the parents are different that
     // means they are in different sets so
     // union them
-    if (v1 != v2) {
-      unionSet(v1, v2, parent, rank);
+    if (u_root != v_root) {
+      unionSet(u_root, v_root, parent, rank);
       minTree[minTreeIndex] = edges[i];
       ++minTreeIndex;
     }
@@ -298,5 +314,6 @@ int main() {
   print_dot_tree_to_file(&tree[tree_count - 1], "graph.dot");
 
   delete[] edges;
+  delete[] minTree.first;
   delete[] tree;
 }
