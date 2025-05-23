@@ -25,15 +25,15 @@ struct node {
   child* childs = nullptr;
   node() : u_id(-1), v_id(-1) {}
   node(int _uid, int _vid) : u_id(_uid), v_id(_vid) {}
-  ~node() {
-    // Destructor to deallocate the childs
-    child* current_child = childs;
-    while (current_child != nullptr) {
-      child* next_child = current_child->next;
-      delete current_child;
-      current_child = next_child;
-    }
-  }
+  //~node() {
+  //  // Destructor to deallocate the childs
+  //  child* current_child = childs;
+  //  while (current_child != nullptr) {
+  //    child* next_child = current_child->next;
+  //    delete current_child;
+  //    current_child = next_child;
+  //  }
+  //}
 };
 
 struct child {
@@ -87,7 +87,7 @@ void print_dot_tree_to_file(node* root, const std::string& filename = "graph.dot
 // Initialization of parent[] and rank[] arrays
 void makeSets(int parent[], int rank[], int n)
 {
-  for (int i = 1; i < n; i++) {
+  for (int i = 0; i < n; i++) {
     parent[i] = i;
     rank[i] = 0;
   }
