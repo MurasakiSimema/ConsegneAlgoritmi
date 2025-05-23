@@ -30,6 +30,8 @@ struct node {
 struct child {
   node* value;
   child* next;
+  bool is_leaf;
+  int id = -1;
 };
 
 
@@ -54,7 +56,10 @@ void print_dot_tree_to_file(node* root, const std::string& filename = "graph.dot
     while(current->childs) {
       node* child = current->childs->value;
       std::stringstream child_label;
-      child_label << "\"" << child->u_id << "-" << child->v_id << "\"";
+      if(!current->childs->is_leaf)
+        child_label << "\"" << child->u_id << "-" << child->v_id << "\"";
+      else
+        child_label << "\"" << current->childs->id << "\"";
       fout << "    " << label.str() << " -> " << child_label.str() << ";\n";
       dfs(child);
       current->childs = current->childs->next;
@@ -87,7 +92,7 @@ int findParent(int parent[], int component)
 node* findNode(int id)
 {
   // Check if the node already exists
-  for (int i = 0; i < tree_count; i++) {
+  for (int i = tree_count -1 ; i >= 0; --i) {
     if (tree[i].u_id == id || tree[i].v_id == id) {
       return &tree[i];
     }
@@ -109,6 +114,20 @@ void unionSet(int u, int v, int parent[], int rank[])
 
   if (node_u == nullptr && node_v == nullptr) {
     tree[tree_count] = node(u, v);
+    child* new_child = new child;
+    new_child->value = nullptr;
+    new_child->next = nullptr;
+    new_child->is_leaf = true;
+    new_child->id = u;
+    tree[tree_count].childs = new_child;
+
+    new_child = new child;
+    new_child->value = nullptr;
+    new_child->next = nullptr;
+    new_child->is_leaf = true;
+    new_child->id = v;
+    tree[tree_count].childs->next = new_child;
+
     tree_count++;
   }
   else if (node_u == nullptr) {
@@ -118,6 +137,15 @@ void unionSet(int u, int v, int parent[], int rank[])
     new_child->value = node_v;
     new_child->next = tree[tree_count].childs;
     tree[tree_count].childs = new_child;
+
+    new_child = new child;
+    new_child->value = nullptr;
+    new_child->next = nullptr;
+    new_child->is_leaf = true;
+    new_child->id = u;
+    new_child->next = tree[tree_count].childs;
+    tree[tree_count].childs = new_child;
+
     tree_count++;
   }
   else if (node_v == nullptr) {
@@ -125,6 +153,14 @@ void unionSet(int u, int v, int parent[], int rank[])
 
     child* new_child = new child;
     new_child->value = node_u;
+    new_child->next = tree[tree_count].childs;
+    tree[tree_count].childs = new_child;
+
+    new_child = new child;
+    new_child->value = nullptr;
+    new_child->next = nullptr;
+    new_child->is_leaf = true;
+    new_child->id = v;
     new_child->next = tree[tree_count].childs;
     tree[tree_count].childs = new_child;
     
