@@ -25,6 +25,15 @@ struct node {
   child* childs = nullptr;
   node() : u_id(-1), v_id(-1) {}
   node(int _uid, int _vid) : u_id(_uid), v_id(_vid) {}
+  ~node() {
+    // Destructor to deallocate the childs
+    child* current_child = childs;
+    while (current_child != nullptr) {
+      child* next_child = current_child->next;
+      delete current_child;
+      current_child = next_child;
+    }
+  }
 };
 
 struct child {
@@ -38,6 +47,29 @@ struct child {
 node* tree = nullptr;
 int tree_count = 0;
 
+void printDfs(node* current, std::ofstream& fout) {
+  if (!current) return;
+
+  std::stringstream label;
+  label << "\"" << current->u_id << "-" << current->v_id << "\"";
+
+  fout << "    " << label.str() << " [style=filled, fillcolor=red];\n";
+
+  while(current->childs) {
+    node* child = current->childs->value;
+    std::stringstream child_label;
+    if(!current->childs->is_leaf)
+      child_label << "\"" << child->u_id << "-" << child->v_id << "\"" << " [color=red]";
+    else{
+      child_label << "\"" << current->childs->id << "\""<< " [color=green]";
+      fout << "    " << child_label.str() << " [style=filled, fillcolor=green];\n";
+    }
+    fout << "    " << label.str() << " -> " << child_label.str() << ";\n";
+    printDfs(child, fout);
+    current->childs = current->childs->next;
+  }
+}
+
 void print_dot_tree_to_file(node* root, const std::string& filename = "graph.dot") {
   std::ofstream fout(filename);
   if (!fout) {
@@ -47,26 +79,7 @@ void print_dot_tree_to_file(node* root, const std::string& filename = "graph.dot
 
   fout << "digraph G {\n";
 
-  std::function<void(node*)> dfs = [&](node* current) {
-    if (!current) return;
-
-    std::stringstream label;
-    label << "\"" << current->u_id << "-" << current->v_id << "\"";
-
-    while(current->childs) {
-      node* child = current->childs->value;
-      std::stringstream child_label;
-      if(!current->childs->is_leaf)
-        child_label << "\"" << child->u_id << "-" << child->v_id << "\"";
-      else
-        child_label << "\"" << current->childs->id << "\"";
-      fout << "    " << label.str() << " -> " << child_label.str() << ";\n";
-      dfs(child);
-      current->childs = current->childs->next;
-    }
-  };
-
-  dfs(root);
+  printDfs(root, fout);
   fout << "}\n";
   fout.close();
 }
@@ -283,4 +296,7 @@ int main() {
   std::pair<edge*, int> minTree = kruskalAlgo(n_nodes, edges, n_edges);
 
   print_dot_tree_to_file(&tree[tree_count - 1], "graph.dot");
+
+  delete[] edges;
+  delete[] tree;
 }
