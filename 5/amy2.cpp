@@ -24,7 +24,6 @@
 struct edge {
   int u, v, weight;
   edge(int _u, int _v, int w) : u(_u), v(_v), weight(w) {}
-  edge(const edge& other) : u(other.u), v(other.v), weight(other.weight) {}
   edge() : u(-1), v(-1), weight(0) {}
 };
 
@@ -43,13 +42,13 @@ struct child {
 };
 
 /// @brief Struct to represent a node in the tree
-/// @param connection_edge pointer to the edge connected to the node
+/// @param connection_edge edge connecting two diffrent sets
 /// @param childs Pointer to the first child of the node
 struct node {
   edge connection_edge;
   child* childs = nullptr;
-  node() : connection_edge() {}
-  node(const edge& edge) : connection_edge(edge) {}
+  node() : connection_edge(-1, -1, 0) {}
+  node(const edge& e) : connection_edge(e) {}
   ~node() {
     // Destructor to deallocate the childs
     child* current_child = childs;
@@ -79,6 +78,7 @@ void printDfs(node* current, std::ofstream& fout, bool stop = false) {
   if (!current) return;
 
   std::stringstream label;
+  // Modificato: aggiungi il peso all'etichetta del nodo rosso
   label << "\"" << current->connection_edge.u << "-" << current->connection_edge.v << " \\n(Weight: " << current->connection_edge.weight << ")\"";
 
   fout << "    " << label.str() << " [style=filled, fillcolor=red];\n";
@@ -92,6 +92,7 @@ void printDfs(node* current, std::ofstream& fout, bool stop = false) {
     node* child = current->childs->value;
     std::stringstream child_label;
     if (!current->childs->is_leaf) {
+      // L'etichetta del figlio interno dovrebbe anche mostrare il suo peso
       child_label << "\"" << child->connection_edge.u << "-" << child->connection_edge.v << " \\n(Weight: " << child->connection_edge.weight << ")\"" << " [color=red]";  // Modificato qui!
       print_dfs++;
     } else {
@@ -174,7 +175,7 @@ node* findNode(int id) {
 /// @param parent Array to store the parent of each node
 /// @param rank Array to store the rank of each node
 /// @note This function also creates a new node in the tree and adds the two nodes as children of the new node.
-void unionSet(int u, int v, edge& current_edge, int parent[], int rank[]) {
+void unionSet(int u, int v, const edge& current_edge, int parent[], int rank[]) {
   // Finding the parents
   u = findParent(parent, u);
   v = findParent(parent, v);
