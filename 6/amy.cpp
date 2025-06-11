@@ -6,12 +6,7 @@
 #define MAX_LINES 150
 #define MAX_LINE_LENGTH 512
 
-const int INDEL_COST = -10;
-const int MATCH_SCORE = 10;
-const int MISMATCH_PENALTY = -10;
-const int FULL_BLOCK_SCORE = 40;
-const int BLOCK_SCORE = 25;
-const int BLOCK_PENALTY = -40;
+const int INDEL_COST = -5;
 
 /**
  * @brief Function to remove spaces and tabs from a string
@@ -22,7 +17,7 @@ const std::string removeSpace(const std::string& s) {
     std::string noSpace;
     for (int i = 0; i < s.size();++i)
         if (s[i] != ' ' && s[i] != '\t')
-            noSpace += s[i];
+            noSpace.append(s[i] + "");
 
     return noSpace;
 }
@@ -37,35 +32,28 @@ int calculateScore(const std::string& line1, const std::string& line2) {
     std::string line1NoSpace = removeSpace(line1);
     std::string line2NoSpace = removeSpace(line2);
 
-    bool l1StartBlock = (line1NoSpace.find('{') != -1);
-    bool l1EndBlock = (line1NoSpace.find('}') != -1);
-    bool l2StartBlock = (line2NoSpace.find('{') != -1);
-    bool l2EndBlock = (line2NoSpace.find('}') != -1);
+    // Identifica se una riga contiene una graffa di apertura o chiusura
+    bool l1_has_brace = (line1NoSpace.find("{") != std::string::npos) || (line1NoSpace.find("}") != std::string::npos);
+    bool l2_has_brace = (line2NoSpace.find("{") != std::string::npos) || (line2NoSpace.find("}") != std::string::npos);
 
-    // Lines are identical 
+    // Caso 1: Le righe sono identiche (ignoring whitespace)
     if (line1NoSpace.compare(line2NoSpace) == 0) {
-        if (l1StartBlock || l1EndBlock)
-            return FULL_BLOCK_SCORE; // Higher weight for structure match
-        else
-            return MATCH_SCORE; // Normal match
+        if (l1_has_brace) 
+            return 30; // Peso maggiore per match di struttura
+        else 
+            return 10; // Match normale
     }
 
-    if (
-        l1StartBlock && l2StartBlock
-        || l1EndBlock && l2EndBlock
-        )
-        return BLOCK_SCORE; // Score for "block structure" match
+    // Caso 2: Entrambe le righe contengono graffe (anche se il contenuto è diverso)
+    if (l1_has_brace && l2_has_brace) 
+        return 20; // Punteggio per match di "struttura di blocco"
 
-    if (
-        l1StartBlock && !l2StartBlock
-        || l1EndBlock && !l2EndBlock
-        || !l1StartBlock && l2StartBlock
-        || !l1EndBlock && l2EndBlock
-        )
-        return BLOCK_PENALTY; // Strong penalty for block misalignment
-
-    // No match, no block, just two different lines
-    return MISMATCH_PENALTY;
+    // Caso 3: Solo una delle due righe contiene una graffa
+    if (l1_has_brace != l2_has_brace) 
+        return -30; // Forte penalità per disallineamento di blocchi
+    
+    // Caso 4: Nessun match, nessuna graffa, semplicemente due righe diverse
+    return -10; 
 }
 
 
@@ -82,10 +70,6 @@ void align(const std::string* lines1, const std::string* lines2, int n1, int n2,
     for (int i = 1; i <= n1; ++i) {
         for (int j = 1; j <= n2; ++j) {
             int score = calculateScore(lines1[i - 1], lines2[j - 1]);
-
-            if (score == BLOCK_SCORE) {
-                printf("Block match found between line %d of file1 and line %d of file2\n", i, j);
-            }
 
             int score_diag = M[i - 1][j - 1] + score;
             int score_up = M[i - 1][j] + INDEL_COST;
@@ -106,6 +90,26 @@ void align(const std::string* lines1, const std::string* lines2, int n1, int n2,
         }
     }
 }
+
+/*
+
+    fp1 = fopen(file1Path, "r");
+    if (fp1 == NULL) {
+        printf("Errore: Impossibile aprire il file %s\n", file1Path);
+        return;
+    }
+    printf("Lettura di %s...\n", file1Path);
+    while (numLines1 < MAX_LINES && fgets(buffer, MAX_LINE_LENGTH, fp1) != NULL) {
+        std::string current_line = buffer;
+        size_t newline_pos = current_line.find('\n');
+        if (newline_pos != std::string::npos) {
+            current_line.erase(newline_pos);
+        }
+        lines1[numLines1] = current_line;
+        numLines1++;
+    }
+    fclose(fp1);
+*/
 
 /**
  * @brief Function to read a file and store its lines in an array of strings
@@ -163,8 +167,8 @@ void needleman(const char* file1Path, const char* file2Path) {
 
 
     // Inizializzazione delle matrici di programmazione dinamica 
-    int** M = new int* [numLines1 + 1];
-    char** P = new char* [numLines1 + 1];
+    int** M = new int*[numLines1 + 1];
+    char** P = new char*[numLines1 + 1];
     for (int i = 0; i <= numLines1; ++i) {
         M[i] = new int[numLines2 + 1];
         P[i] = new char[numLines2 + 1];
@@ -195,49 +199,63 @@ void needleman(const char* file1Path, const char* file2Path) {
     std::string output_file1 = "";
     std::string output_file2 = "";
 
-    while (i > 0 || j > 0) {
-        if (P[i][j] == 2) { // Match o Mismatch
-            // Ignoriamo la spaziatura per il confronto, ma stampiamo l'originale
-            std::string noSpace1 = removeSpace(lines1[i - 1]);
-            std::string noSpace2 = removeSpace(lines2[j - 1]);
+    std::string aligned_lines1[MAX_LINES + MAX_LINES]; // Abbastanza grande per tutti i casi
+    std::string aligned_lines2[MAX_LINES + MAX_LINES];
+    int current_aligned_idx = 0; // Indice per riempire gli array allineati
 
-            if (noSpace1.compare(noSpace2) != 0) { // Linea modificata
-                output_file1 = "~ " + lines1[i - 1] + "\n" + output_file1;
-                output_file2 = "~ " + lines2[j - 1] + "\n" + output_file2;
-            }
-            else { // Linea identica
-                output_file1 = "  " + lines1[i - 1] + "\n" + output_file1;
-                output_file2 = "  " + lines2[j - 1] + "\n" + output_file2;
+    while (i > 0 || j > 0) {
+        if (P[i][j] == 2) { // Vengo dalla diagonale (Match o Mismatch/Modifica)
+            std::string trimmed_line1_check = removeSpace(lines1[i - 1]);
+            std::string trimmed_line2_check = removeSpace(lines2[j - 1]);
+
+            if (trimmed_line1_check == trimmed_line2_check) {
+                // Le righe sono identiche (dopo rimozione spazi)
+                aligned_lines1[current_aligned_idx] = "  " + lines1[i - 1]; // Spazio per indentazione
+                aligned_lines2[current_aligned_idx] = "  " + lines2[j - 1];
+            } else {
+                // Le righe sono diverse, è un Mismatch / Modifica
+                aligned_lines1[current_aligned_idx] = "~ " + lines1[i - 1];
+                aligned_lines2[current_aligned_idx] = "~ " + lines2[j - 1];
             }
             i--; j--;
-        }
-        else if (P[i][j] == 0) { // Linea rimossa (solo in file1)
-            output_file1 = "- " + lines1[i - 1] + "\n" + output_file1;
-            output_file2 = "  (rimossa)\n" + output_file2; // Placeholder per allineamento
+        } else if (P[i][j] == 0) { // Vengo da sopra (Rimozione da file1)
+            aligned_lines1[current_aligned_idx] = "- " + lines1[i - 1];
+            aligned_lines2[current_aligned_idx] = "  "; // Riga vuota per allineamento visivo
             i--;
-        }
-        else { // P[i][j] == 1 // Linea aggiunta (solo in file2)
-            output_file1 = "  (aggiunta)\n" + output_file1; // Placeholder per allineamento
-            output_file2 = "+ " + lines2[j - 1] + "\n" + output_file2;
+        } else { // P[i][j] == 1 // Vengo da sinistra (Inserimento in file2)
+            aligned_lines1[current_aligned_idx] = "  "; // Riga vuota per allineamento visivo
+            aligned_lines2[current_aligned_idx] = "+ " + lines2[j - 1];
             j--;
         }
+        current_aligned_idx++;
     }
 
-    printf("File 1:\n%s\n", output_file1.c_str());
-    printf("File 2:\n%s\n", output_file2.c_str());
+    // Stampa delle linee allineate in ordine corretto 
+    printf("File 1                             | File 2\n");
+    printf("-----------------------------------|-----------------------------------\n");
 
-    // Deallocazione della memoria delle matrici M e P
+    for (int k = current_aligned_idx - 1; k >= 0; --k) {
+        std::string s1 = aligned_lines1[k];
+        std::string s2 = aligned_lines2[k];
+        
+        if (s1.length() > 35) s1 = s1.substr(0, 32) + "...";
+        if (s2.length() > 35) s2 = s2.substr(0, 32) + "...";
+        
+        printf("%-35s| %s\n", s1.c_str(), s2.c_str());
+    }
+
+    // --- Deallocazione della memoria delle matrici M e P ---
     for (int k = 0; k <= numLines1; ++k) {
-        free(M[k]);
-        free(P[k]);
+        delete[] M[k];
+        delete[] P[k];
     }
-    free(M);
-    free(P);
+    delete[] M;
+    delete[] P;
 }
 
 int main() {
-    char* filePath1 = "file1.cpp";
-    char* filePath2 = "file2.cpp";
+    const char* filePath1 = "file1.cpp";
+    const char* filePath2 = "file2.cpp";
 
     needleman(filePath1, filePath2);
 }
