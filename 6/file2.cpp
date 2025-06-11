@@ -7,6 +7,7 @@ int main(){
         int f
     }
 
+    for ()
     while(){
         int d
     }
