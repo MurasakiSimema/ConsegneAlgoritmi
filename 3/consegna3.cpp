@@ -11,58 +11,50 @@ using namespace std;
 int details = 0;
 int graph = 0;
 
-int n = 0; /// dimensione dell'array
+int n = 0; /// array dimension
 
-/// file di output per grafo
+/// output file for graph
 ofstream output_graph;
-int n_operazione = 0; /// contatore di operazioni per visualizzare i vari step
+int n_operazione = 0; /// operation counter to visualize various steps
 
 //////////////////////////////////////////////////
-/// Definizione della struttura dati lista
+/// Definition of the list data structure
 //////////////////////////////////////////////////
 
-/// struct per il nodo della lista
+/// struct for the list node
 typedef struct node
 {
     int val;
     struct node* next;
 } node_t;
 
-/// struct per la lista
+/// struct for the list
 typedef struct list
 {
     node* head;
-    // node* tail; /// per lista doubly linked
 } list_t;
 
 //////////////////////////////////////////////////
-/// Fine Definizione della struttura dati lista
+/// End Definition of the list data structure
 //////////////////////////////////////////////////
 
 //////////////////////////////////////////////////
-/// Definizione della struttura dati grafo
+/// Definition of the graph data structure
 //////////////////////////////////////////////////
 
-int* V;          // elenco dei nodi del grafo
-int* V_visitato; // nodo visitato?
-int* V_distanza; // distanza dal nodo di partenza
-int* G_visitato; // global visitato?
+int* V;          // list of graph nodes
+int* V_visitato; // visited node?
+int* V_distanza; // distance from the starting node
+int* G_visitato; // global visited?
 
-// list_t* E;  /// array con le liste di adiacenza per ogni nodo
-list_t** E; /// array di puntatori a le liste di adiacenza per ogni nodo
+list_t** E; /// array of pointers to adjacency lists for each node
 int n_nodi;
 
 //////////////////////////////////////////////////
-/// Fine Definizione della struttura dati grafo
+/// End Definition of the graph data structure
 //////////////////////////////////////////////////
 
-/// Questo e' un modo per stampare l'indirizzo node relativamente ad un altro di riferimento.
-/// Permette di ottenere offset di piccola dimensione per essere facilmente visualizzati
-/// Nota: il metodo non e' robusto e potrebbe avere comportamenti indesiderati su architetture diverse
-/// L'alternativa corretta' e' utilizzare %p di printf: es. printf("%p\n",(void*) node);
-/// con lo svantaggio di avere interi a 64 bit poco leggibili
-
-list_t* global_ptr_ref = NULL; /// usato per memorizzare il puntatore alla prima lista allocata
+list_t* global_ptr_ref = NULL; /// used to store the pointer to the first allocated list
 
 int get_address(void* node)
 {
@@ -110,7 +102,7 @@ void list_print(list_t* l)
         while (current != NULL) {
             if (!details)
                 printf("%d, ", current->val);
-            else { /// stampa completa
+            else { /// detailed print
                 if (current->next == NULL)
                     printf("allocato in %d [Val: %d, Next: NULL]\n",
                         get_address(current),
@@ -155,7 +147,7 @@ void list_insert_front(list_t* l, int elem)
     l->head = new_node;
 }
 
-int find_cycle(int n, int depth = 0)
+int findCycle(int n, int depth = 0)
 {
     graph_print();
 
@@ -163,13 +155,13 @@ int find_cycle(int n, int depth = 0)
         printf("DFS: lavoro sul nodo %d (visitato %d)\n", n, V_visitato[n]);
 
     if (V_visitato[n] == 1)
-        return depth - V_distanza[n]; // c'e' il ciclo
+        return depth - V_distanza[n]; // there is a cycle
 
     if (V_visitato[n] == 2)
-        return 0; // trovato un nuovo percorso alternativo (non c'e' il ciclo)
+        return 0; // found a new alternative path (no cycle)
 
-    V_visitato[n] = 1; // prima volta che incontro questo nodo
-    V_distanza[n] = depth; // distanza dal nodo di partenza
+    V_visitato[n] = 1; // first time I encounter this node
+    V_distanza[n] = depth; // distance from the starting node
 
     if (details)
         printf("Visito il nodo %d (val %d)\n", n, V[n]);
@@ -177,7 +169,7 @@ int find_cycle(int n, int depth = 0)
     int t = 0;
     node_t* elem = E[n]->head;
     while (elem != NULL) {
-        int temp = find_cycle(elem->val, depth + 1);
+        int temp = findCycle(elem->val, depth + 1);
         if (temp > t)
             t = temp;
         elem = elem->next;
@@ -189,9 +181,13 @@ int find_cycle(int n, int depth = 0)
     return t;
 }
 
-int full_find_cycle() {
+/**
+ * @brief Find the longest cycle in the graph.
+ * @return The length of the longest cycle found in the graph.
+ */
+int fullFindCycle() {
     for (int i = 0; i < n_nodi; i++) {
-        G_visitato[i] = 0; // flag = non visitato
+        G_visitato[i] = 0; // flag = not visited
     }
     int max = 0;
     int t = 0;
@@ -200,18 +196,19 @@ int full_find_cycle() {
         if (G_visitato[i] == 1) {
             if (details)
                 printf("nodo %d gia' visitato\n", i);
-            continue; // nodo gia' visitato
+            continue; // node already visited
         }
 
         for (int j = 0; j < n_nodi; j++) {
-            V_visitato[j] = 0; // flag = non visitato
-            V_distanza[j] = 0; // flag = non visitato
+            V_visitato[j] = 0; // flag = not visited
+            V_distanza[j] = 0; // flag = not visited
         }
-        t = find_cycle(i);
+        t = findCycle(i);
         graph_print();
         if (t > max)
             max = t;
-        printf("test %d: ciclo = %d\n", i, t);
+        if (details)
+            printf("test %d: ciclo = %d\n", i, t);
     }
 
     return max;
@@ -219,7 +216,7 @@ int full_find_cycle() {
 
 int parse_cmd(int argc, char** argv)
 {
-    /// controllo argomenti
+    /// parse command line arguments
     int ok_parse = 0;
     for (int i = 1; i < argc; i++) {
         if (argv[i][1] == 'v') {
@@ -309,7 +306,7 @@ int main(int argc, char** argv)
     //    // printf("test %d: ciclo = %d\n", i, t);
     //}
 
-    int t = full_find_cycle();
+    int t = fullFindCycle();
     printf("Ciclo più lungo = %d\n", t);
 
     if (graph) {
