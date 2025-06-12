@@ -15,56 +15,49 @@ using namespace std;
 int details = 0;
 int graph = 0;
 
-// file di output per grafo
+// Output file for graph visualization
 ofstream output_graph;
-int n_operazione = 0; // contatore di operazioni per visualizzare i vari step
+int n_operazione = 0; // operation counter to visualize various steps
 
-int ct_visit = 0; // contatore durante visita
+int ct_visit = 0; // counter during visit
 
 //////////////////////////////////
-// Definizione della struttura dati lista
+// Data structure definition for list
 //////////////////////////////////
 
-// struct per il nodo della lista
+// struct for the list node
 typedef struct node {
-    int val; // prossimo nodo
-    float w; // peso dell'arco
+    int val; // next node
+    float w; // edge weight
     struct node* next;
 } node_t;
 
-// struct per la lista
+// struct for the list
 typedef struct list {
     node* head;
 } list_t;
 
 //////////////////////////////////
-// Fine Definizione della struttura dati lista
+// End Data structure definition for list
 //////////////////////////////////
 
 //////////////////////////////////
-// Definizione della struttura dati grafo
+// Data structure definition for graph
 //////////////////////////////////
 
-int* V;          // elenco dei nodi del grafo
-int* V_visitato; // nodo visitato
-int* V_prev;     // nodo precedente dalla visita
-float* V_dist;   // distanza da sorgente
+int* V;          // list of graph nodes
+int* V_visitato; // visited node
+int* V_prev;     // previous node from visit
+float* V_dist;   // distance from source
 
-// list_t* E;  // array con le liste di adiacenza per ogni nodo
-list_t** E; // array di puntatori a le liste di adiacenza per ogni nodo
+list_t** E; // array of pointers to adjacency lists for each node
 int n_nodi;
 
 //////////////////////////////////
-// Fine Definizione della struttura dati grafo
+// End Data structure definition for graph
 //////////////////////////////////
 
-// Questo e' un modo per stampare l'indirizzo node relativamente ad un altro di riferimento.
-// Permette di ottenere offset di piccola dimensione per essere facilmente visualizzati
-// Nota: il metodo non e' robusto e potrebbe avere comportamenti indesiderati su architetture diverse
-// L'alternativa corretta' e' utilizzare %p di printf: es. printf("%p\n",(void*) node);
-// con lo svantaggio di avere interi a 64 bit poco leggibili
-
-list_t* global_ptr_ref = NULL; // usato per memorizzare il puntatore alla prima lista allocata
+list_t* global_ptr_ref = NULL; // used to store the pointer to the first allocated list
 
 int get_address(void* node) {
     return (int)((long)node - (long)global_ptr_ref);
@@ -72,7 +65,7 @@ int get_address(void* node) {
 
 void node_print(int n) {
 
-    // calcolo massima distanza (eccetto infinito)
+    // calculate maximum distance (except infinity)
     float max_d = 0;
     for (int i = 0; i < n_nodi; i++)
         if (max_d < V_dist[i] && V_dist[i] < INFTY)
@@ -84,7 +77,7 @@ void node_print(int n) {
     if (V_visitato[n] == 1)
         output_graph << "penwidth = 4; ";
 
-    float col = V_dist[n] / max_d; // distanza in scala 0..1
+    float col = V_dist[n] / max_d; // distance in scale 0..1
     output_graph << "fillcolor = \"0.0 0.0 " << col / 2 + 0.5 << "\"; style=filled; ";
     if (V_dist[n] < INFTY)
         output_graph << "label = "
@@ -94,13 +87,13 @@ void node_print(int n) {
         << "\"Idx: " << n << ", dist: INF\" ];\n";
 
     node_t* elem = E[n]->head;
-    while (elem != NULL) { // disegno arco
+    while (elem != NULL) { // draw edge
         output_graph << "node_" << n << "_" << n_operazione << " -> ";
         output_graph << "node_" << elem->val << "_" << n_operazione << " [ label=\"" << elem->w << "\", len=" << elem->w / 100 * 10 << " ]\n";
         elem = elem->next;
     }
 
-    if (V_prev[n] != -1) { // se c'e' un nodo precedente visitato -> disegno arco
+    if (V_prev[n] != -1) { // if there is a visited previous node -> draw edge
         float len = 0;
         len = 1;
         output_graph << "node_" << n << "_" << n_operazione << " -> ";
@@ -126,7 +119,7 @@ void list_print(list_t* l) {
         while (current != NULL) {
             if (!details)
                 printf("%d w:%f, ", current->val, current->w);
-            else { // stampa completa
+            else { // detailed print
                 if (current->next == NULL)
                     printf("allocato in %d [Val: %d, W: %f, Next: NULL]\n",
                         get_address(current),
@@ -171,12 +164,11 @@ void list_insert_front(list_t* l, int elem, float w) {
 
     l->head = new_node;
 }
-
-// HEAP//
-const int MAX_SIZE = 256; // allocazione statica
+// HEAP //
+const int MAX_SIZE = 256; // static allocation
 float heap[MAX_SIZE];
-int heapIndex[MAX_SIZE]; // array di indici per il nodo
-int heap_size = 0; // dimensione attuale dell'heap
+int heapIndex[MAX_SIZE]; // array of indices for the node
+int heap_size = 0; // current size of the heap
 
 int parent_idx(int n) {
     if (n == 0)
@@ -197,13 +189,19 @@ int child_R_idx(int n) {
 }
 
 int is_leaf(int n) {
-    return (child_L_idx(n) == -1); // non c'e' bisogno di controllare il figlio R
+    return (child_L_idx(n) == -1); // no need to check the R child
 }
 
+
+/**
+* @brief Inserts an element into the heap at the correct position to maintain the min-heap property.
+* @param elem The element to insert.
+* @param idx The index of the node in the graph.
+*/
 void heap_insert(float elem, int idx) {
-    // inserisco il nuovo nodo con contenuto elem
-    // nell'ultima posizione dell'array
-    // ovvero continuo a completare il livello corrente
+    // insert the new node with content elem
+    // in the last position of the array
+    // that is, continue to complete the current level
 
     if (details)
         printf("Inserisco elemento %f in posizione %d\n", elem, heap_size);
@@ -215,8 +213,8 @@ void heap_insert(float elem, int idx) {
         heap[i] = elem;
         heapIndex[i] = idx;
 
-        while (i != 0) {                          // non sono sulla radice
-            if (heap[parent_idx(i)] <= heap[i]) { // proprieta' dell' heap e' rispettata -> esco
+        while (i != 0) {
+            if (heap[parent_idx(i)] <= heap[i]) { // properties of the heap respected -> exit
                 if (details)
                     printf("Il genitore ha valore %f <= del nodo %f, esco\n", heap[parent_idx(i)], heap[i]);
                 return;
@@ -224,7 +222,7 @@ void heap_insert(float elem, int idx) {
 
             if (details)
                 printf("Il genitore ha valore %f > del nodo %f, swap\n", heap[parent_idx(i)], heap[i]);
-            // il nodo ha un genitore sicuramente <   --> swap
+
             float t = heap[parent_idx(i)];
             int tIdx = heapIndex[parent_idx(i)];
             heap[parent_idx(i)] = heap[i];
@@ -239,19 +237,24 @@ void heap_insert(float elem, int idx) {
         printf("Heap pieno!\n");
 }
 
+/** 
+* @brief Removes the minimum element from the heap and returns it.
+* @return A pair containing the minimum element and its index in the graph.
+*/
+
 pair<float, int> heap_remove_min() {
-    if (heap_size <= 0) { // heap vuoto!
+    if (heap_size <= 0) { // heap is empty
         printf("Errore: heap vuoto\n");
         return { NULL,-1 };
     }
 
-    float minimo = heap[0];
+    float min = heap[0];
     int idx_min = heapIndex[0];
 
     if (details)
-        printf("Minimo identificato %f\n", minimo);
-    // scambio la radice con l'ultima foglia a destra
-    // il minimo e' stato spostato in fondo --> pronto per l'eliminazione
+        printf("Minimo identificato %f\n", min);
+    // swap the root with the last element
+    // the root is now the last element -- ready for removal
     float t = heap[0];
     int tIdx = heapIndex[0];
     heap[0] = heap[heap_size - 1];
@@ -259,35 +262,35 @@ pair<float, int> heap_remove_min() {
     heap[heap_size - 1] = t;
     heapIndex[heap_size - 1] = tIdx;
 
-    // elimino il minimo (ora in fondo all'array)
+    // remove the last element
     heap_size--;
 
-    // nella radice c'e' un valore grabde (massimo?)
-    int i = 0; // indice di lavoro (parto dalla root)
+    int i = 0; // start from the root
 
-    while (!is_leaf(i)) { // garantisco di fermarmi alla foglia
+    while (!is_leaf(i)) { // ensure to stop at the leaf
         if (details)
             printf("Lavoro con il nodo in posizione i = %d, valore %f\n", i, heap[i]);
 
-        int con_chi_mi_scambio = -1;
-        // controllo il nodo i con il suo figlio L
-        if (heap[i] > heap[child_L_idx(i)]) { // il nodo i e' piu' grabde
-            // attivare uno swap (la proprieta' heap non e' rispettata)
-            con_chi_mi_scambio = child_L_idx(i);
+        int swapIdx = -1;
+        // check if the node is greater than its left child
+        if (heap[i] > heap[child_L_idx(i)]) { // the node is greater than the left child
+            // swap, the properties of the heap are violated
+            swapIdx = child_L_idx(i);
             if (details)
                 printf("Figlio L e' piu' piccolo (valore %f)\n", heap[child_L_idx(i)]);
 
-            if (child_R_idx(i) >= 0 && // esiste il nodo destro
+            if (child_R_idx(i) >= 0 && // there is a right child
                 heap[child_L_idx(i)] > heap[child_R_idx(i)]) {
-                con_chi_mi_scambio = child_R_idx(i);
+                swapIdx = child_R_idx(i);
                 if (details)
                     printf("Figlio R e' ancora piu' piccolo (valore %f)\n", heap[child_R_idx(i)]);
             }
         }
-        else { // il nodo e' piu' piccolo del figlio L
-            if (child_R_idx(i) >= 0) {                // esiste il figlio R
-                if (heap[i] > heap[child_R_idx(i)]) { // attivo lo swap
-                    con_chi_mi_scambio = child_R_idx(i);
+        else { // the node is smaller than the left child
+            if (child_R_idx(i) >= 0) {                // there is a right child
+                if (heap[i] > heap[child_R_idx(i)]) { // the node is greater than the right child
+                    // swap, the properties of the heap are violated
+                    swapIdx = child_R_idx(i);
                     if (details)
                         printf("Figlio R e' piu' piccolo del nodo (valore %f)\n", heap[child_R_idx(i)]);
                 }
@@ -298,22 +301,26 @@ pair<float, int> heap_remove_min() {
                 break;
         }
 
-        // swap tra i e con_chi_mi_scambio
+        // swap the node with the child that has the minimum value
         float t = heap[i];
         int tIdx = heapIndex[i];
-        heap[i] = heap[con_chi_mi_scambio];
-        heapIndex[i] = heapIndex[con_chi_mi_scambio];
-        heap[con_chi_mi_scambio] = t;
-        heapIndex[con_chi_mi_scambio] = tIdx;
+        heap[i] = heap[swapIdx];
+        heapIndex[i] = heapIndex[swapIdx];
+        heap[swapIdx] = t;
+        heapIndex[swapIdx] = tIdx;
 
-        i = con_chi_mi_scambio;
+        i = swapIdx;
     }
 
-    return { minimo, idx_min }; // ritorno il valore e l'indice del nodo
+    return { min, idx_min }; // return the minimum value and its index
 }
 
 // END HEAP //
 
+/**
+ * @brief Implements Dijkstra's algorithm to find the shortest path in a graph.
+ * @param n The index of the source node.
+ */
 void shortest_path(int n) {
     V_dist[n] = 0;
     heap_insert(V_dist[n], n); // inserisco il nodo sorgente in coda
@@ -321,30 +328,32 @@ void shortest_path(int n) {
     graph_print();
 
     while (heap_size > 0) {
-        auto best = heap_remove_min(); // estraggo il nodo con distanza minima
+        auto best = heap_remove_min(); // extract the minimum element from the heap
         int best_idx = best.second;
         if (details)
             printf("(1) Estraggo il nodo %d con distanza %f\n", best_idx, best.first);
 
-        // estrai dalla coda
+        // control if the node has already been visited
         int u = best_idx;
         if (V_visitato[u] == 1)
             continue;
 
         V_visitato[u] = 1;
-        // esploro la lista di adiacenza
+        // mark the node as visited
+
+        // control the adjacency list of the node
         node_t* elem = E[u]->head;
         while (elem != NULL) {
-            int v = elem->val; // arco u --> v
+            int v = elem->val; // edge u --> v
 
             // alt ← dist[u] + Graph.Edges(u, v)
-            float alt = V_dist[u] + elem->w; // costo per arrivare al nuovo nodo passando per u
-            if (alt < V_dist[v]) {           // il percorso sorgente ---> u --> v migliora il percorso attuale sorgente --> v
+            float alt = V_dist[u] + elem->w; // compute the alternative distance
+            if (alt < V_dist[v]) {           // if the alternative distance is less than the current distance
                 V_dist[v] = alt;
                 V_prev[v] = u;
             }
 
-            heap_insert(V_dist[v], v); // inserisco il nuovo nodo in coda
+            heap_insert(V_dist[v], v); // insert the node v in the heap 
             if (details)
                 printf("(2) Inserisco in coda il nodo %d con peso %f\n", v, V_dist[v]);
 
@@ -356,6 +365,13 @@ void shortest_path(int n) {
     graph_print();
 }
 
+/**
+ * @brief Implements the Bellman-Ford algorithm to find the shortest path in a graph.
+ * @param n The index of the source node.
+ * @param ADJ The adjacency list of the graph.
+ * @param local_n_nodi The number of nodes in the graph.
+ * @return True if there are no negative weight cycles, false otherwise.
+ */
 bool bellman_ford(int n, list_t** ADJ = E, int local_n_nodi = n_nodi) {
     V_prev[n] = n;
     V_dist[n] = 0;
@@ -364,20 +380,20 @@ bool bellman_ford(int n, list_t** ADJ = E, int local_n_nodi = n_nodi) {
             node_t* adj = ADJ[u]->head;
             while (adj != nullptr) {
                 int v = adj->val;
-                if (V_dist[u] != INFTY && V_dist[u] + adj->w < V_dist[v]) {  // se la distanza dalla sorgente al nodo corrente + il peso dell'arco è minore della distanza dalla sorgente al nodo
-                    V_dist[v] = V_dist[u] + adj->w;                          // aggiorno la distanza dalla sorgente al nodo
-                    V_prev[v] = u;                                           // aggiorno il nodo precedente
+                if (V_dist[u] != INFTY && V_dist[u] + adj->w < V_dist[v]) {  // if the distance from the source to the current node + the weight of the edge is less than the distance from the source to the node
+                    V_dist[v] = V_dist[u] + adj->w;                          // update the distance from the source to the node
+                    V_prev[v] = u;                                           // update the previous node
                 }
                 adj = adj->next;
             }
         }
     }
 
-    for (int i = 0; i < local_n_nodi; i++) {  // controllo se esiste un ciclo con peso negativo
+    for (int i = 0; i < local_n_nodi; i++) {  // control for negative weight cycles
         node_t* adj = ADJ[i]->head;
         while (adj != nullptr) {
             int v = adj->val;
-            if (V_dist[i] != INFTY && V_dist[i] + adj->w < V_dist[v]) {  // se la distanza dalla sorgente al nodo corrente + il peso dell'arco è minore della distanza dalla sorgente al nodo
+            if (V_dist[i] != INFTY && V_dist[i] + adj->w < V_dist[v]) {  // if the distance from the source to the current node + the weight of the edge is less than the distance from the source to the node
                 if (details)
                     printf("Esiste un ciclo con peso negativo\n");
                 return false;
@@ -388,9 +404,8 @@ bool bellman_ford(int n, list_t** ADJ = E, int local_n_nodi = n_nodi) {
     return true;
 }
 
-
 int parse_cmd(int argc, char** argv) {
-    // controllo argomenti
+    // parse command line arguments
     int ok_parse = 0;
     for (int i = 1; i < argc; i++) {
         if (argv[i][1] == 'v') {
@@ -425,12 +440,11 @@ int main(int argc, char** argv) {
 
     if (graph) {
         output_graph.open("graph.dot");
-        // preparo header
+        // prepare header for graphviz
         output_graph << "digraph g" << endl;
         output_graph << "{ " << endl;
         output_graph << "node [shape=none]" << endl;
         output_graph << "rankdir=\"LR\"" << endl;
-        ;
         //    output_graph << "edge[tailclip=false,arrowtail=dot];"<<endl;
     }
 
@@ -439,21 +453,20 @@ int main(int argc, char** argv) {
 
     n_nodi = 10;
 
-    // init nodi
+    // init nodes
     V = new int[n_nodi];
     V_visitato = new int[n_nodi];
     V_prev = new int[n_nodi];
     V_dist = new float[n_nodi];
 
-    // init archi
-    E = new list_t * [n_nodi]; //(list_t**)malloc(n_nodi*sizeof(list_t*));
-
-    // costruzione grafo
+    // init edges
+    E = new list_t * [n_nodi]; 
+    // graph initialization
     for (int i = 0; i < n_nodi; i++) {
         V[i] = 2 * i;
-        V_visitato[i] = 0; // flag = non visitato
-        V_prev[i] = -1;    // non c'e' precedente
-        V_dist[i] = INFTY; // infinito
+        V_visitato[i] = 0; // flag = not visited
+        V_prev[i] = -1;    // no predecessor
+        V_dist[i] = INFTY; // infinity
 
         E[i] = list_new();
 
@@ -464,13 +477,13 @@ int main(int argc, char** argv) {
         int y = i / N;
     }
 
-    int partenza = 0;
-    int arrivo = n_nodi - 1;
+    int start = 0;
+    int end = n_nodi - 1;
     int w_max = 100;
 
     for (int i = 0; i < n_nodi - 1; i++) {
         // arco costoso
-        list_insert_front(E[i], arrivo, w_max - 2 * i);
+        list_insert_front(E[i], end, w_max - 2 * i);
         // arco 1
         if (i > 0)
             list_insert_front(E[i - 1], i, 1);
@@ -486,20 +499,20 @@ int main(int argc, char** argv) {
             list_print(E[i]);
         }
 
-    shortest_path(partenza);
-    printf("Distanza minima dal nodo %d al nodo %d e' %f\n", partenza, arrivo, V_dist[arrivo]);
+    shortest_path(start);
+    printf("Distanza minima dal nodo %d al nodo %d e' %f\n", start, end, V_dist[end]);
     graph_print();
 
 
     if (bellman_ford(0)) {
-        printf("Bellman-Ford: distanza minima dal nodo %d al nodo %d e' %f\n", partenza, arrivo, V_dist[arrivo]);
-        printf("Bellman-Ford: percorso minimo dal nodo %d al nodo %d e' ", partenza, arrivo);
-        int i = arrivo;
-        while (i != partenza) {
+        printf("Bellman-Ford: distanza minima dal nodo %d al nodo %d e' %f\n", start, end, V_dist[end]);
+        printf("Bellman-Ford: percorso minimo dal nodo %d al nodo %d e' ", start, end);
+        int i = end;
+        while (i != start) {
             printf("%d ", i);
             i = V_prev[i];
         }
-        printf("%d \n", partenza);
+        printf("%d \n", start);
     }
     else
         printf("Bellman-Ford: esiste un ciclo con peso negativo\n");
@@ -526,7 +539,7 @@ int main(int argc, char** argv) {
         printf("Bellman-Ford: esiste un ciclo con peso negativo\n");
 
     if (graph) {
-        // preparo footer e chiudo file
+        // footer for graphviz 
         output_graph << "}" << endl;
         output_graph.close();
         cout << " File graph.dot scritto" << endl
