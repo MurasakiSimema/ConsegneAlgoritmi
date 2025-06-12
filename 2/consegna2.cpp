@@ -8,6 +8,10 @@ namespace Tree {
     int height = 0;
   };
 
+  /**
+    * @brief Flips the left and right children of a binary tree recursively.
+    * @param n Pointer to the root node of the tree to be flipped.
+   */
   void flip(node* n) {
     if (n == nullptr)
       return;
@@ -18,6 +22,11 @@ namespace Tree {
     flip(n->right);
   }
 
+  /**
+    * @brief Calculates the height of a binary tree recursively.
+    * @param n Pointer to the root node of the tree.
+    * @return The height of the tree.
+   */
   void depth(node* n, int d) {
     if (n == nullptr)
       return;
@@ -26,6 +35,11 @@ namespace Tree {
     depth(n->right, d + 1);
   }
 
+  /**
+    * @brief Calculates if a binary tree is balanced.
+    * @param n Pointer to the root node of the tree.
+    * @return True if the tree is balanced, false otherwise.
+   */
   bool isBalanced(node* n, int d = 0) {
     if (n == nullptr)
       return true;
@@ -51,6 +65,11 @@ namespace Tree {
     return true;
   }
 
+  /**
+    * @brief Checks if a binary tree is complete.
+    * @param n Pointer to the root node of the tree.
+    * @return True if the tree is complete, false otherwise.
+   */
   bool isComplete(node* n) {
     if (n == nullptr)
       return true;
@@ -63,6 +82,11 @@ namespace Tree {
     return isComplete(n->left) && isComplete(n->right);
   }
 
+  /**
+   * @brief Calculates the depth of each node in the tree and assigns the father pointer.
+   * @param n Pointer to the root node of the tree.
+   * @param d The current depth in the tree.
+   */
   void depthWithFather(node* n, int d) {
     if (n == nullptr)
       return;
@@ -78,6 +102,13 @@ namespace Tree {
     }
   }
 
+  /**
+   * @brief Finds the lowest common ancestor of two nodes in a binary tree.
+   * @param root Pointer to the root node of the tree.
+   * @param p Pointer to the first node.
+   * @param q Pointer to the second node.
+   * @return Pointer to the lowest common ancestor node.
+   */
   node* lowestCommonAnchestor(node* root, node* p, node* q) {
     depthWithFather(root, 0);
     node* tmp1 = p;
