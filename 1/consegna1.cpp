@@ -35,6 +35,15 @@ void print_array(int* A, int dim) {
   printf("\n");
 }
 
+/**
+ * @brief Merges 2 sorted arrays into a single sorted array.
+ * 
+ * @param A The array to store the merged result.
+ * @param L The first sorted array.
+ * @param R The second sorted array.
+ * @param ln The length of the first sorted array.
+ * @param rn The length of the second sorted array.
+ */
 void partialMerge(int* A, int* L, int* R, int ln, int rn) {
   int i = 0;
   int j = 0;
@@ -72,6 +81,15 @@ void partialMerge(int* A, int* L, int* R, int ln, int rn) {
   }
 }
 
+/**
+ * @brief Merges an array sorted in 3 part into a single sorted array whit the center reversed.
+ * 
+ * @param A The array
+ * @param q The index of the end of the first part.
+ * @param r The index of the end of the second part.
+ * @param s The index of the end of the third part.
+ * @param limit The number of elements to skip from the first part.
+ */
 void tripleMergeWithReverseCenter(int* A, int q, int r, int s, int limit) {
   int* L = new int[q];
   int* R = new int[r - q];
@@ -140,6 +158,12 @@ void tripleMergeWithReverseCenter(int* A, int q, int r, int s, int limit) {
   delete[] M;
 }
 
+/**
+ * @brief The Gnome Sort algorithm sorts.
+ * 
+ * @param A The array to be sorted.
+ * @param n The number of elements in the array.
+ */
 void gnomeSort(int* A, int n) {
   int index = 1;
   int arrIndex = A[1];
@@ -170,6 +194,12 @@ void gnomeSort(int* A, int n) {
   }
 }
 
+/**
+ * @brief The reverse Gnome Sort algorithm sorts in reverse order.
+ * 
+ * @param A The array to be sorted.
+ * @param n The number of elements in the array.
+ */
 void reverseGnomeSort(int* A, int n) {
   int index = n - 2;
   int arrIndex = A[n - 2];
@@ -200,28 +230,12 @@ void reverseGnomeSort(int* A, int n) {
   }
 }
 
-void reverseShellSort(int* arr, int n) {
-  for (int gap = n / 2; gap > 0; gap /= 15) {
-    for (int i = gap; i < n; i += 1) {
-      int temp = arr[i];
-      ++ct_read;
-
-      int j;
-      int tempWithGap = arr[i - gap];
-      ++ct_read;
-      for (j = i; j >= gap && tempWithGap < temp; j -= gap) {
-        arr[j] = tempWithGap;
-        if (j >= gap + gap) {
-          tempWithGap = arr[j - gap - gap];
-          ++ct_read;
-        }
-      }
-
-      arr[j] = temp;
-    }
-  }
-}
-
+/**
+ * @brief The Shell Sort algorithm sort.
+ * 
+ * @param arr The array to be sorted.
+ * @param n The number of elements in the array.
+ */
 void shellSort(int* arr, int n) {
   for (int gap = n / 2; gap > 0; gap /= 10) {
     for (int i = gap; i < n; i += 1) {
@@ -244,6 +258,21 @@ void shellSort(int* arr, int n) {
   }
 }
 
+/**
+ * @brief Sorts an array in a sinusoidal pattern.
+ * 
+ * The first part is sorted in ascending order using Gnome Sort,
+ * the second part is sorted in descending order using Reverse Gnome Sort,
+ * and the third part is sorted using Shell Sort.
+ * Finally, it merges the three parts with the center reversed.
+ * 
+ * @param A The array to be sorted.
+ * @param firstStart The starting index of the first part.
+ * @param firstEnd The ending index of the first part.
+ * @param secondN The number of elements in the second part.
+ * @param thirdN The number of elements in the third part.
+ * @param mergeLimit The limit for merging.
+ */
 void sinusoidSort(int* A, const int firstStart, const int firstEnd, const int secondN, const int thirdN, const int mergeLimit) {
   int n = firstEnd - firstStart;
   int* arr = A + firstStart;
@@ -251,7 +280,6 @@ void sinusoidSort(int* A, const int firstStart, const int firstEnd, const int se
 
   n = secondN;
   arr = A + firstEnd;
-  //reverseShellSort(arr, n);
   reverseGnomeSort(arr, n);
 
   n = thirdN;
@@ -294,22 +322,6 @@ int main(int argc, char** argv) {
   A = new int[max_dim];
 
   n = max_dim;
-
-  // srand((unsigned)time(NULL));
-  // //creazione file input: NON USARE PIU' --> il file data.txt ufficiale è stato allegato, per permettere confronti equivalenti
-  //  FILE *f = fopen("data.txt", "w+");
-  //  int size=100;
-  //  for (int j = 0; j < size; j++) {
-  //      for (int i = 0; i < n; i++) {
-  //          int v = 0;
-  //         //  v=(int)(100000*exp(-(0.0+i-n/2)*(0.0+i-n/2)/n/n*64));
-  //          v=(int)(5000*(1+sin(3.1415*(i/(n/2.0)))));
-  //          v+=rand()%(1+(int)(n*pow(((i+0.0)/n),2)));
-  //          fprintf(f, "%d,", v);
-  //      }
-  //      fprintf(f, "\n");
-  //  }
-  //  fclose(f);
 
   ifstream input_data;
   input_data.open("data.txt");

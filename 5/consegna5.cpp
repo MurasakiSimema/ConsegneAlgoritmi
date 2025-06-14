@@ -1,4 +1,4 @@
-/*
+/**
  * @file consegna5.cpp
  * @author Simone Bergonzi (@MurasakiSimema), Giulia Bettinelli, Amy Malacarne
  * @source GeeksForGeeks

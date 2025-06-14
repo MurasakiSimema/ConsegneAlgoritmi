@@ -7,7 +7,7 @@ int main(){
         int f
     }
 
-    for ()
+    if ()
     while(){
         int d
     }

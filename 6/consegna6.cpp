@@ -1,3 +1,9 @@
+/**
+ * @file consegna6.cpp
+ * @author Simone Bergonzi (@MurasakiSimema), Amy Malacarne
+ * 
+ */
+
 #include <iostream>
 #include <fstream>
 #include <string>
