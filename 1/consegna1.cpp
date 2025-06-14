@@ -37,7 +37,7 @@ void print_array(int* A, int dim) {
 
 /**
  * @brief Merges 2 sorted arrays into a single sorted array.
- * 
+ *
  * @param A The array to store the merged result.
  * @param L The first sorted array.
  * @param R The second sorted array.
@@ -59,8 +59,7 @@ void partialMerge(int* A, int* L, int* R, int ln, int rn) {
     if (li <= rj) {
       A[k] = li;
       ++i;
-    }
-    else {
+    } else {
       A[k] = rj;
       ++j;
     }
@@ -83,7 +82,7 @@ void partialMerge(int* A, int* L, int* R, int ln, int rn) {
 
 /**
  * @brief Merges an array sorted in 3 part into a single sorted array whit the center reversed.
- * 
+ *
  * @param A The array
  * @param q The index of the end of the first part.
  * @param r The index of the end of the second part.
@@ -135,12 +134,10 @@ void tripleMergeWithReverseCenter(int* A, int q, int r, int s, int limit) {
     if (mk <= li && mk <= rj) {
       A[l] = mk;
       ++k;
-    }
-    else if (rj <= li && rj <= mk) {
+    } else if (rj <= li && rj <= mk) {
       A[l] = rj;
       ++j;
-    }
-    else {
+    } else {
       A[l] = li;
       ++i;
     }
@@ -160,7 +157,7 @@ void tripleMergeWithReverseCenter(int* A, int q, int r, int s, int limit) {
 
 /**
  * @brief The Gnome Sort algorithm sorts.
- * 
+ *
  * @param A The array to be sorted.
  * @param n The number of elements in the array.
  */
@@ -175,8 +172,7 @@ void gnomeSort(int* A, int n) {
       arrIndex1 = arrIndex;
       arrIndex = A[index];
       ++ct_read;
-    }
-    else {
+    } else {
       A[index] = arrIndex1;
       A[index - 1] = arrIndex;
       index--;
@@ -185,8 +181,7 @@ void gnomeSort(int* A, int n) {
         int tmp = arrIndex;
         arrIndex = arrIndex1;
         arrIndex1 = tmp;
-      }
-      else {
+      } else {
         arrIndex1 = A[index - 1];
         ++ct_read;
       }
@@ -196,7 +191,7 @@ void gnomeSort(int* A, int n) {
 
 /**
  * @brief The reverse Gnome Sort algorithm sorts in reverse order.
- * 
+ *
  * @param A The array to be sorted.
  * @param n The number of elements in the array.
  */
@@ -211,8 +206,7 @@ void reverseGnomeSort(int* A, int n) {
       arrIndex1 = arrIndex;
       arrIndex = A[index];
       ++ct_read;
-    }
-    else {
+    } else {
       A[index] = arrIndex1;
       A[index + 1] = arrIndex;
       index++;
@@ -221,8 +215,7 @@ void reverseGnomeSort(int* A, int n) {
         int tmp = arrIndex;
         arrIndex = arrIndex1;
         arrIndex1 = tmp;
-      }
-      else {
+      } else {
         arrIndex1 = A[index + 1];
         ++ct_read;
       }
@@ -232,7 +225,7 @@ void reverseGnomeSort(int* A, int n) {
 
 /**
  * @brief The Shell Sort algorithm sort.
- * 
+ *
  * @param arr The array to be sorted.
  * @param n The number of elements in the array.
  */
@@ -260,12 +253,8 @@ void shellSort(int* arr, int n) {
 
 /**
  * @brief Sorts an array in a sinusoidal pattern.
- * 
- * The first part is sorted in ascending order using Gnome Sort,
- * the second part is sorted in descending order using Reverse Gnome Sort,
- * and the third part is sorted using Shell Sort.
- * Finally, it merges the three parts with the center reversed.
- * 
+ *
+ *
  * @param A The array to be sorted.
  * @param firstStart The starting index of the first part.
  * @param firstEnd The ending index of the first part.
@@ -364,8 +353,8 @@ int main(int argc, char** argv) {
   }
 
   printf("N test: %d, Min: %d, Med: %.1f, Max: %d\n",
-    ntests,
-    read_min, (0.0 + read_avg) / ntests, read_max);
+         ntests,
+         read_min, (0.0 + read_avg) / ntests, read_max);
 
   delete[] A;
 

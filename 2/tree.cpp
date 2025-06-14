@@ -111,12 +111,12 @@ void depth(node* n, int d) {
   depth(n->right, d + 1);
 }
 
-bool isBalanced(node* n, int d = 0) {
+bool isBalanced(node* n) {
   if (n == nullptr)
     return true;
-  n->depth = d;
-  bool left = isBalanced(n->left, d + 1);
-  bool right = isBalanced(n->right, d + 1);
+
+  bool left = isBalanced(n->left);
+  bool right = isBalanced(n->right);
 
   if (!left || !right)
     return false;

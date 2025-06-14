@@ -40,12 +40,12 @@ namespace Tree {
     * @param n Pointer to the root node of the tree.
     * @return True if the tree is balanced, false otherwise.
    */
-  bool isBalanced(node* n, int d = 0) {
+  bool isBalanced(node* n) {
     if (n == nullptr)
       return true;
-    n->depth = d;
-    bool left = isBalanced(n->left, d + 1);
-    bool right = isBalanced(n->right, d + 1);
+
+    bool left = isBalanced(n->left);
+    bool right = isBalanced(n->right);
 
     if (!left || !right)
       return false;
@@ -107,7 +107,7 @@ namespace Tree {
    * @param root Pointer to the root node of the tree.
    * @param p Pointer to the first node.
    * @param q Pointer to the second node.
-   * @return Pointer to the lowest common ancestor node.
+   * @return Pointer to the lowest common ancestor node if found, nullptr otherwise.
    */
   node* lowestCommonAnchestor(node* root, node* p, node* q) {
     depthWithFather(root, 0);
