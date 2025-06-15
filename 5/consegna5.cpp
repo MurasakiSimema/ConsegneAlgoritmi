@@ -31,7 +31,7 @@ struct edge {
 struct node;
 
 /// @brief Struct to represent a child of a node in the tree
-/// @param value Pointer to the child node
+/// @param value Pointer to the child node if it is not a leaf
 /// @param next Pointer to the next child
 /// @param is_leaf Boolean indicating if the child is a leaf
 /// @param id The id of the child if it is a leaf
@@ -175,10 +175,6 @@ node* findNode(int id) {
 /// @param rank Array to store the rank of each node
 /// @note This function also creates a new node in the tree and adds the two nodes as children of the new node.
 void unionSet(int u, int v, edge& current_edge, int parent[], int rank[]) {
-  // Finding the parents
-  u = findParent(parent, u);
-  v = findParent(parent, v);
-
   // Finding the last node in the tree with the given id
   node* node_u = findNode(u);
   node* node_v = findNode(v);
