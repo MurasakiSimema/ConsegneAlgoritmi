@@ -82,6 +82,10 @@ void align(const std::string* lines1, const std::string* lines2, int n1, int n2,
     for (int j = 1; j <= n2; ++j) {
       int score = calculateScore(lines1[i - 1], lines2[j - 1]);
 
+      if (score == BLOCK_SCORE) {
+        printf("Block match found between line %d of file1 and line %d of file2\n", i, j);
+      }
+
       int score_diag = M[i - 1][j - 1] + score;
       int score_up = M[i - 1][j] + INDEL_COST;
       int score_left = M[i][j - 1] + INDEL_COST;
@@ -118,9 +122,9 @@ void readFile(const char* filePath, std::string* lines, int& numLines) {
   char buffer[MAX_LINE_LENGTH];                                                 // Buffer C-style per fgets
   while (numLines < MAX_LINES && fgets(buffer, MAX_LINE_LENGTH, fp) != NULL) {  // Read line by line until MAX_LINES or EOF
     std::string current_line = buffer;
-    size_t newline_pos = current_line.find_first_of("\n\r");
+    size_t newline_pos = current_line.find('\n');
     if (newline_pos != std::string::npos) {
-      current_line = current_line.substr(0, newline_pos);  // Remove newline character
+      current_line.erase(newline_pos);
     }
     lines[numLines] = current_line;
     numLines++;
@@ -136,6 +140,7 @@ void readFile(const char* filePath, std::string* lines, int& numLines) {
 void needleman(const char* file1Path, const char* file2Path) {
   std::string lines1[MAX_LINES];
   std::string lines2[MAX_LINES];
+  
   int numLines1 = 0;
   int numLines2 = 0;
 
@@ -182,45 +187,45 @@ void needleman(const char* file1Path, const char* file2Path) {
   int i = numLines1;
   int j = numLines2;
 
-  std::string output_file1[MAX_LINES + MAX_LINES];
-  std::string output_file2[MAX_LINES + MAX_LINES];
-  int current_aligned_idx = 0;  // Index for filling aligned arrays
+  std::string aligned_lines1[MAX_LINES + MAX_LINES]; 
+  std::string aligned_lines2[MAX_LINES + MAX_LINES];
+  int current_aligned_idx = 0; 
+
 
   while (i > 0 || j > 0) {
     if (P[i][j] == 2 || P[i][j] == 3) {  // Match o Mismatch
-      if (P[i][j] == 2) {                // Mismatch
-        output_file1[current_aligned_idx] = "~ " + lines1[i - 1];
-        output_file2[current_aligned_idx] = "~ " + lines2[j - 1];
+      if (P[i][j] == 2) {  // Mismatch
+        aligned_lines1[current_aligned_idx] = "~ " + lines1[i - 1];
+        aligned_lines2[current_aligned_idx] = "~ " + lines2[j - 1];
       } else {  // Match
-        output_file1[current_aligned_idx] = "  " + lines1[i - 1];
-        output_file2[current_aligned_idx] = "  " + lines2[j - 1];
+        aligned_lines1[current_aligned_idx] = "  " + lines1[i - 1];
+        aligned_lines2[current_aligned_idx] = "  " + lines2[j - 1];
       }
       i--;
       j--;
     } else if (P[i][j] == 0) {  // Removed line (only in file1)
-      output_file1[current_aligned_idx] = "- " + lines1[i - 1];
-      output_file2[current_aligned_idx] = "  (rimossa)";  // Placeholder for alignment
+      aligned_lines1[current_aligned_idx] = "- " + lines1[i - 1];
+      aligned_lines2[current_aligned_idx] = "  "; 
       i--;
-    } else {                                               // P[i][j] == 1 // Inserted line (only in file2)
-      output_file1[current_aligned_idx] = "  (aggiunta)";  // Placeholder for alignment
-      output_file2[current_aligned_idx] = "+ " + lines2[j - 1];
+    } else {                                           // P[i][j] == 1 // Inserted line (only in file2)
+      aligned_lines1[current_aligned_idx] = "  "; 
+      aligned_lines2[current_aligned_idx] = "+ " + lines2[j - 1];
       j--;
     }
     current_aligned_idx++;
   }
 
-  printf("%d\n", current_aligned_idx);
-  printf("File 1                                                           | File 2\n");
-  printf("-----------------------------------------------------------------|----------------------------------------------------------------\n");
+  printf("File 1                             | File 2\n");
+  printf("-----------------------------------|-----------------------------------\n");
 
   for (int k = current_aligned_idx - 1; k >= 0; --k) {
-    std::string s1 = output_file1[k];
-    std::string s2 = output_file2[k];
-
-    if (s1.length() > 64) s1 = s1.substr(0, 61) + "...";
-    if (s2.length() > 64) s2 = s2.substr(0, 61) + "...";
-
-    printf("%-64s | %s \n", s1.c_str(), s2.c_str());
+      std::string s1 = aligned_lines1[k];
+      std::string s2 = aligned_lines2[k];
+      
+      if (s1.length() > 35) s1 = s1.substr(0, 32) + "...";
+      if (s2.length() > 35) s2 = s2.substr(0, 32) + "...";
+      
+      printf("%-35s| %s\n", s1.c_str(), s2.c_str());
   }
 
   // Deallocate memory
@@ -233,8 +238,8 @@ void needleman(const char* file1Path, const char* file2Path) {
 }
 
 int main() {
-  char* filePath1 = "file1.cpp";
-  char* filePath2 = "file2.cpp";
+  const char* filePath1 = "file1.cpp";
+  const char* filePath2 = "file2.cpp";
 
   needleman(filePath1, filePath2);
 }
