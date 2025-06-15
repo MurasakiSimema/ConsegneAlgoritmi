@@ -73,7 +73,7 @@ void node_print(int n) {
   else if (V_visitato[n] == 1)
     output_graph << "fillcolor = \"#bbbbbb\"; style=filled; ";
   output_graph << "label = "
-               << "\"Idx: " << n << ", val: " << V[n] << "\" ];\n";
+    << "\"Idx: " << n << ", val: " << V[n] << "\" ];\n";
 
   node_t* elem = E[n]->head;
   while (elem != NULL) {  /// disegno arco
@@ -108,13 +108,13 @@ void list_print(list_t* l) {
       } else {  /// detailed print
         if (current->next == NULL)
           printf("allocato in %d [Val: %d, Next: NULL]\n",
-                 get_address(current),
-                 current->val);
+            get_address(current),
+            current->val);
         else
           printf("allocato in %d [Val: %d, Next: %d]\n",
-                 get_address(current),
-                 current->val,
-                 get_address(current->next));
+            get_address(current),
+            current->val,
+            get_address(current->next));
       }
       current = current->next;
     }
@@ -184,6 +184,8 @@ int findCycle(int n, bool &newPath, int depth = 0) {
       newPath = false;  // set the global newPath flag
     }
 
+    if (!localNewPath)
+      newPath = false;
     elem = elem->next;
   }
 
@@ -333,7 +335,7 @@ int main(int argc, char** argv) {
     output_graph << "}" << endl;
     output_graph.close();
     cout << " File graph.dot scritto" << endl
-         << "Creare il grafo con: dot graph.dot -Tpdf -o graph.pdf" << endl;
+      << "Creare il grafo con: dot graph.dot -Tpdf -o graph.pdf" << endl;
   }
 
   return 0;
