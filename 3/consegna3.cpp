@@ -148,7 +148,7 @@ void list_insert_front(list_t* l, int elem) {
   l->head = new_node;
 }
 
-int findCycle(int n, int depth = 0) {
+int findCycle(int n, bool &newPath, int depth = 0) {
   graph_print();
 
   if (details)
@@ -169,8 +169,9 @@ int findCycle(int n, int depth = 0) {
 
   int t = 0;
   node_t* elem = E[n]->head;
+  bool localNewPath = newPath;  // local variable to track if a new path is found
   while (elem != NULL) {
-    int temp = findCycle(elem->val, depth + 1);
+    int temp = findCycle(elem->val, localNewPath, depth + 1);
     if (temp > t) {
       t = temp;
     }
@@ -179,6 +180,8 @@ int findCycle(int n, int depth = 0) {
       findedCycle = true;       // found a cycle
       maxCycle.head = nullptr;  // delete the previous maximum cycle
       startNode = elem->val;    // store the starting node of the cycle
+      localNewPath = true;  // found a new path
+      newPath = false;  // set the global newPath flag
     }
 
     elem = elem->next;
@@ -187,7 +190,7 @@ int findCycle(int n, int depth = 0) {
   V_visitato[n] = 2;
   G_visitato[n] = 1;
 
-  if (findedCycle) {
+  if (findedCycle && !newPath) {
     list_insert_front(&maxCycle, n);  // insert the adjacent node in the cycle
   }
   if (startNode == n) {
@@ -210,6 +213,8 @@ void fullFindCycle() {
   startNode = -1;
   maxCycle.head = nullptr;
 
+  bool newPath = false;  // flag to indicate if a new path is found
+
   for (int i = 0; i < n_nodi; i++) {
     G_visitato[i] = 0;  // flag = not visited
   }
@@ -225,7 +230,7 @@ void fullFindCycle() {
       V_visitato[j] = 0;  // flag = not visited
       V_distanza[j] = 0;  // flag = not visited
     }
-    t = findCycle(i);
+    t = findCycle(i, newPath);
     graph_print();
     if (details)
       printf("test %d: ciclo = %d\n", i, t);
@@ -274,7 +279,7 @@ int main(int argc, char** argv) {
     //    output_graph << "edge[tailclip=false,arrowtail=dot];"<<endl;
   }
 
-  n_nodi = 12;
+  n_nodi = 13;
   V = new int[n_nodi];
   V_visitato = new int[n_nodi];
   V_distanza = new int[n_nodi];
@@ -301,10 +306,13 @@ int main(int argc, char** argv) {
 
   // Creazione del terzo grafo sconnesso
   list_insert_front(E[8], 9);
+  list_insert_front(E[9], 12);
   list_insert_front(E[9], 10);
   list_insert_front(E[10], 11);
   list_insert_front(E[10], 9);
+  list_insert_front(E[11], 12);
   list_insert_front(E[11], 8);
+
 
   graph_print();
 
